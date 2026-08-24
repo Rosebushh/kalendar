@@ -131,38 +131,27 @@ function saveApi(){
   loadAll();
 }
 
-function loadAllJsonp(){
-  return new Promise((resolve,reject)=>{
-    const cb='calendarCallback_'+Date.now();
-    const script=document.createElement('script');
-    const timer=setTimeout(()=>{cleanup();reject(new Error('timeout'))},10000);
-    function cleanup(){clearTimeout(timer);delete window[cb];script.remove()}
-    window[cb]=data=>{cleanup();resolve(data)};
-    script.onerror=()=>{cleanup();reject(new Error('jsonp'))};
-    script.src=API_URL+'?action=get_all&callback='+cb;
-    document.head.appendChild(script);
-  });
-}
-
 async function loadAll(){
   if(!API_URL)return;
   try{
     document.getElementById('syncStatus').textContent='Načítám...';
-    let data;
-    try {
-      let r=await fetch(API_URL+'?action=get_all');
-      data=await r.json();
-    } catch (fetchError) {
-      data=await loadAllJsonp();
-    }
-    if(!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('invalid response');
+    let r=await fetch(API_URL+'?action=get_all');
+    let data=await r.json();
+    // Never let an empty or partial response erase data already visible locally.
     const remoteKeys=Object.keys(data);
-    if(remoteKeys.length) DB=Object.assign({},DB,data);
-    localStorage.setItem('cal_db_cache',JSON.stringify(DB));
-    document.getElementById('syncStatus').textContent='✓ Synchronizováno';
-    render();
+    if(remoteKeys.length){
+      DB=Object.assign({},DB,data);
+      localStorage.setItem('cal_db_cache',JSON.stringify(DB));
+      document.getElementById('syncStatus').textContent='✓ Synchronizováno';
+      render();
+    } else {
+      const cached=localStorage.getItem('cal_db_cache');
+      if(cached) DB=JSON.parse(cached);
+      document.getElementById('syncStatus').textContent='⚠ Cloud vrátil prázdná data';
+      render();
+    }
   }catch(e){
-    document.getElementById('syncStatus').textContent='⚠ Offline (lokální data)';
+    document.getElementById('syncStatus').textContent='⚠ Nelze načíst cloudová data';
     let cached=localStorage.getItem('cal_db_cache');
     if(cached)DB=JSON.parse(cached);
     render();
@@ -189,14 +178,12 @@ function startAutoSync(){
 
 function get(k,f){return DB[k+'_'+f]||''}
 const pendingWrites={};
-const dirtyValues={};
 function put(k,f,v){
-  const id=k+'_'+f;
-  DB[id]=v;
-  dirtyValues[id]=v;
+  DB[k+'_'+f]=v;
   localStorage.setItem('cal_db_cache',JSON.stringify(DB));
+  const id=k+'_'+f;
   clearTimeout(pendingWrites[id]);
-  pendingWrites[id]=setTimeout(async()=>{await saveRemote(k,f,dirtyValues[id]); delete pendingWrites[id]; delete dirtyValues[id]},2500);
+  pendingWrites[id]=setTimeout(()=>saveRemote(k,f,DB[k+'_'+f]),700);
   let e=document.getElementById('saved');e.classList.add('show');clearTimeout(window.ft);window.ft=setTimeout(()=>e.classList.remove('show'),900);
 }
 
