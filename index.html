@@ -131,32 +131,15 @@ function saveApi(){
   loadAll();
 }
 
-function loadAllJsonp(){
-  return new Promise((resolve,reject)=>{
-    const cb='calJsonp_'+Date.now();
-    const script=document.createElement('script');
-    const timer=setTimeout(()=>{cleanup();reject(new Error('JSONP timeout'))},10000);
-    function cleanup(){clearTimeout(timer);delete window[cb];script.remove()}
-    window[cb]=data=>{cleanup();resolve(data)};
-    script.onerror=()=>{cleanup();reject(new Error('JSONP error'))};
-    script.src=API_URL+'?action=get_all&callback='+cb;
-    document.head.appendChild(script);
-  });
-}
-
 async function loadAll(){
   if(!API_URL)return;
   try{
     document.getElementById('syncStatus').textContent='Načítám...';
-    let data;
-    try {
-      let r=await fetch(API_URL+'?action=get_all');
-      data=await r.json();
-    } catch(fetchError) {
-      data=await loadAllJsonp();
-    }
-    DB=data;
-    // Also store locally as cache
+    let r=await fetch(API_URL+'?action=get_all');
+    let data=await r.json();
+    // Never let an empty or partial response erase data already visible locally.
+    const remoteKeys=Object.keys(data);
+    if(remoteKeys.length) DB=Object.assign({},DB,data);
     localStorage.setItem('cal_db_cache',JSON.stringify(DB));
     document.getElementById('syncStatus').textContent='✓ Synchronizováno';
     render();
@@ -176,10 +159,7 @@ async function saveRemote(key,field,value){
     await fetch(API_URL,{method:'POST',body:JSON.stringify({key,field,value}),headers:{'Content-Type':'text/plain'}});
     document.getElementById('syncStatus').textContent='✓ Synchronizováno';
   }catch(e){
-    // Apps Script can reject cross-origin POSTs on mobile; retry as a simple GET.
-    const img=new Image();
-    img.src=API_URL+'?action=save&key='+encodeURIComponent(key)+'&field='+encodeURIComponent(field)+'&value='+encodeURIComponent(value);
-    document.getElementById('syncStatus').textContent='✓ Odesláno k synchronizaci';
+    document.getElementById('syncStatus').textContent='⚠ Uloženo lokálně';
   }
 }
 
