@@ -1,121 +1,616 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<!-- skill:chrome -->
-<style>
-/* Credit line — bottom-right */
-.design-ui-credit {
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
-  font: 11px/1 system-ui, sans-serif;
-  color: rgba(128,128,128,0.5);
-  pointer-events: none;
-  z-index: 2147483647;
-  transition: opacity 0.4s ease;
-  user-select: none;
-  letter-spacing: 0.02em;
-}
-
-/* Hide chrome on touch devices */
-@media (hover: none) {
-  .design-ui-credit { display: none; }
-}
-
-/* Print fixes */
-@media print {
-  * {
-    transition: none !important;
-    animation: none !important;
-    box-shadow: none !important;
-  }
-  body {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-  .design-ui-credit { display: none !important; }
-}
-
-</style>
-<script>
-(function () {
-    // Design-ui pages are single compositions, so the whole body is editable.
-    function markEditable() {
-        document.body.classList.add('artifact-editable');
-    }
-
-    // Credit badge with idle-fade. Hover devices only.
-    function initChromeUI() {
-        if (!matchMedia('(hover: hover)').matches) return;
-
-        var credit = document.createElement('div');
-        credit.className = 'design-ui-credit';
-        credit.setAttribute('aria-hidden', 'true');
-        credit.innerHTML = '\u{1F49C} by ClickUp Brain';
-        document.body.appendChild(credit);
-
-        var timer = null;
-        var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
-        fade(true);
-        var show = function () {
-            fade(false);
-            clearTimeout(timer);
-            timer = setTimeout(function () { fade(true); }, 3000);
-        };
-        document.addEventListener('mousemove', show);
-        show();
-    }
-
-    function init() {
-        markEditable();
-        initChromeUI();
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-})();
-
-</script>
-<!-- /skill:chrome -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#75543a">
-<link rel="manifest" href="manifest.json">
 <title>Viola kalendář</title>
+
 <style>
-:root{--bg:#f7f2ea;--paper:#fffdf9;--ink:#2b2824;--muted:#746e65;--line:#ded5c9;--job:#f4dfcf;--jobline:#d19f78;--accent:#75543a;--note:#dff0e9;--noteline:#86baa7;--weekend:#eeeef3;--weekink:#65657a;--holiday:#f8e2e9;--holidayink:#874357;--alert:#f3aea2;--green:#28734e}*{box-sizing:border-box}body{margin:0;padding:18px 24px;background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}button{font:inherit;cursor:pointer}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}.nav,.actions,.switch{display:flex;align-items:center;gap:8px}.nav h1{min-width:220px;text-align:center;font-size:1.45rem;margin:0}.btn{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-weight:650}.primary,.switch .active{background:var(--accent);color:#fffdf9;border-color:var(--accent)}.switch{padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}.switch button{height:34px;border:0;border-radius:7px;padding:0 14px;background:transparent;color:var(--muted);font-weight:700}.calendar{display:flex;flex-direction:column;gap:8px}.row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 82px 82px;gap:8px}.weekday{text-align:center;color:var(--muted);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px}.weekday:nth-child(n+6){color:var(--weekink)}.cell{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;aspect-ratio:1/.92;display:flex;flex-direction:column;gap:6px;cursor:pointer}.cell.today{border:2px solid var(--accent)}.empty{background:transparent;border-color:transparent;cursor:default;aspect-ratio:auto}.head{display:flex;align-items:center;position:relative;min-height:28px}.num{font-weight:800;font-size:1.05rem}.today .num{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fffdf9;font-size:.88rem}.dow{margin-left:auto;color:var(--muted);font-size:.72rem}.drop{position:absolute;left:50%;transform:translateX(-50%);width:24px;height:24px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--weekink);font-size:.72rem;display:grid;place-items:center}.hero{display:flex;flex-direction:column;gap:5px;flex:1;min-height:0}.job,.note{position:relative;flex:1;min-height:68px;border-radius:8px;padding:10px 36px 10px 11px;word-break:break-word;white-space:pre-wrap;overflow:hidden}.job{background:var(--job);border:1px solid var(--jobline);font-size:1rem;font-weight:700}.job.rain{background:var(--weekend);border-color:var(--line);color:var(--weekink)}.note{background:var(--note);border:1px solid var(--noteline);font-size:.93rem}.note.blink{background:var(--alert);animation:pulse 1s ease-in-out infinite}@keyframes pulse{50%{background:#f8d6ce}}.mini{position:absolute;right:5px;bottom:5px;width:25px;height:25px;border:1px solid var(--line);border-radius:6px;background:var(--paper);display:grid;place-items:center}.map{color:var(--green)}.map.off{opacity:.35;pointer-events:none}.bell{color:#286f5c}.off-cell{justify-content:center;align-items:center;background:var(--weekend);color:var(--weekink);text-align:center;min-height:92px;padding:10px;cursor:default}.holiday{background:var(--holiday);color:var(--holidayink);border-color:#e4b4c3}.off-cell strong{font-size:.88rem}.off-cell small{font-size:.68rem;margin-top:4px}.modal-bg,.people-bg{position:fixed;inset:0;background:#0006;z-index:10;display:none;place-items:center}.modal-bg.open,.people-bg.open{display:grid}.modal{width:min(580px,94vw);max-height:90vh;overflow:auto;background:var(--paper);border-radius:16px;padding:26px;box-shadow:0 20px 60px #0003}.modal h2{margin:0 0 18px}.field{margin-bottom:14px}.field label{display:block;color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}.field textarea{width:100%;min-height:50px;resize:vertical;border:1px solid var(--jobline);border-radius:8px;background:var(--job);padding:9px;font:1rem system-ui;color:var(--ink)}.peopleline{display:flex;align-items:center;gap:8px}.editpeople{height:28px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}.people{display:flex;flex-wrap:wrap;gap:8px}.person{border:1px solid var(--line);border-radius:20px;background:var(--paper);padding:6px 13px;font-weight:650}.person.selected{background:#bce5cf;border-color:var(--green);color:#17452e}.close{background:var(--accent);color:#fffdf9;border:0;border-radius:8px;padding:10px 20px;font-weight:700}.people-box{background:var(--paper);padding:22px;border-radius:14px;width:min(390px,92vw)}.people-box h3{margin:0 0 12px}.pmi{display:flex;gap:7px;margin:7px 0}.pmi input{flex:1;padding:7px;border:1px solid var(--line);border-radius:6px}.pmi button{border:0;background:transparent}.addperson{display:flex;gap:7px;margin-top:12px}.addperson input{flex:1;padding:8px;border:1px solid var(--line);border-radius:6px}.status{position:fixed;left:18px;bottom:16px;color:var(--muted);font-size:.75rem}.signin{position:fixed;inset:0;background:var(--bg);z-index:30;display:grid;place-items:center}.signin-box{text-align:center;background:var(--paper);padding:30px;border-radius:16px;width:min(420px,92vw);box-shadow:0 12px 40px #0002}.signin-box h2{margin:0 0 8px}.signin-box p{color:var(--muted);margin:0 0 18px}@media(max-width:900px){.row{grid-template-columns:repeat(5,minmax(0,1fr))}.row>*:nth-child(n+6){display:none}}@media(max-width:650px){body{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.weekday:nth-child(n+3){display:none}.cell{aspect-ratio:auto;min-height:180px}.nav h1{min-width:160px;font-size:1.15rem}}
+:root{
+  --bg:#f7f2ea;--paper:#fffdf9;--ink:#2b2824;--muted:#746e65;
+  --line:#ded5c9;--job:#f4dfcf;--jobline:#d19f78;
+  --accent:#75543a;--note:#dff0e9;--noteline:#86baa7;
+  --weekend:#eeeef3;--weekink:#65657a;--holiday:#f8e2e9;
+  --holidayink:#874357;--alert:#f3aaa0;--green:#28734e
+}
+*{box-sizing:border-box}
+body{margin:0;padding:18px 24px;background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}
+button,textarea,input{font:inherit}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.nav,.actions,.switch{display:flex;align-items:center;gap:8px}
+h1{min-width:220px;text-align:center;font-size:1.45rem;margin:0}
+.btn{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-weight:650;cursor:pointer}
+.btn.primary,.switch button.active{background:var(--accent);color:#fffdf9;border-color:var(--accent)}
+.switch{padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.switch button{height:34px;border:0;border-radius:7px;padding:0 14px;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}
+.calendar{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 82px 82px;gap:8px}
+.weekday{text-align:center;color:var(--muted);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px}
+.weekday:nth-child(n+6){color:var(--weekink)}
+.cell{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;aspect-ratio:1/.92;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.cell.today{border:2px solid var(--accent)}
+.empty{background:transparent;border-color:transparent;cursor:default;aspect-ratio:auto}
+.head{display:flex;align-items:center;position:relative;min-height:28px}
+.num{font-weight:800;font-size:1.05rem}
+.today .num{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fffdf9;font-size:.88rem}
+.dow{margin-left:auto;color:var(--muted);font-size:.72rem}
+.drop{position:absolute;left:50%;transform:translateX(-50%);width:24px;height:24px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--weekink);cursor:pointer}
+.hero{display:flex;flex-direction:column;gap:5px;flex:1;min-height:0}
+.job,.note{position:relative;flex:1;min-height:68px;border-radius:8px;padding:10px 36px 10px 11px;word-break:break-word;white-space:pre-wrap;overflow:hidden}
+.job{background:var(--job);border:1px solid var(--jobline);font-size:1rem;font-weight:700}
+.job.rain{background:var(--weekend);border-color:var(--line);color:var(--weekink)}
+.note{background:var(--note);border:1px solid var(--noteline);font-size:.93rem}
+.note.blink{background:var(--alert);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{background:#f8d6ce}}
+.mini{position:absolute;right:5px;bottom:5px;width:25px;height:25px;border:1px solid var(--line);border-radius:6px;background:var(--paper);display:grid;place-items:center;cursor:pointer}
+.map{color:var(--green);text-decoration:none}
+.map.off{opacity:.35;pointer-events:none}
+.bell{color:#286f5c}
+.off-cell{justify-content:center;align-items:center;background:var(--weekend);color:var(--weekink);text-align:center;min-height:92px;padding:10px;cursor:default}
+.holiday{background:var(--holiday);color:var(--holidayink);border-color:#e4b4c3}
+.off-cell strong{font-size:.88rem}
+.off-cell small{font-size:.68rem;margin-top:4px}
+
+.modal-bg,.people-bg{position:fixed;inset:0;background:#0006;z-index:10;display:none;place-items:center}
+.modal-bg.open,.people-bg.open{display:grid}
+.modal{width:min(580px,94vw);max-height:90vh;overflow:auto;background:var(--paper);border-radius:16px;padding:26px;box-shadow:0 20px 60px #0003}
+.modal h2{margin:0 0 18px}
+.field{margin-bottom:14px}
+.field label{display:block;color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.field textarea{width:100%;min-height:50px;resize:vertical;border:1px solid var(--jobline);border-radius:8px;background:var(--job);padding:9px;color:var(--ink)}
+.peopleline{display:flex;align-items:center;gap:8px}
+.editpeople{height:28px;border:1px solid var(--line);border-radius:6px;background:var(--paper);cursor:pointer}
+.people{display:flex;flex-wrap:wrap;gap:8px}
+.person{border:1px solid var(--line);border-radius:20px;background:var(--paper);padding:6px 13px;font-weight:650;cursor:pointer}
+.person.selected{background:#bce5cf;border-color:var(--green);color:#17452e}
+.close{background:var(--accent);color:#fffdf9;border:0;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer}
+.people-box{background:var(--paper);padding:22px;border-radius:14px;width:min(390px,92vw)}
+.people-box h3{margin:0 0 12px}
+.pmi{display:flex;gap:7px;margin:7px 0}
+.pmi input{flex:1;padding:7px;border:1px solid var(--line);border-radius:6px}
+.pmi button{border:0;background:transparent;cursor:pointer}
+.addperson{display:flex;gap:7px;margin-top:12px}
+.addperson input{flex:1;padding:8px;border:1px solid var(--line);border-radius:6px}
+.status{position:fixed;left:18px;bottom:16px;color:var(--muted);font-size:.75rem}
+.signin{position:fixed;inset:0;background:var(--bg);z-index:30;display:grid;place-items:center}
+.signin-box{text-align:center;background:var(--paper);padding:30px;border-radius:16px;width:min(420px,92vw);box-shadow:0 12px 40px #0002}
+.signin-box h2{margin:0 0 8px}
+.signin-box p{color:var(--muted);margin:0 0 18px}
+@media(max-width:900px){
+  .row{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .row>*:nth-child(n+6){display:none}
+}
+@media(max-width:650px){
+  body{padding:10px}
+  .row{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .weekday:nth-child(n+3){display:none}
+  .cell{aspect-ratio:auto;min-height:180px}
+  h1{min-width:160px;font-size:1.15rem}
+}
 </style>
 </head>
+
 <body>
-<div class="signin" id="signin"><div class="signin-box"><h2>Viola kalendář</h2><p>Přihlas se svým Google účtem a otevři společný kalendář.</p><button class="btn primary" id="login">Přihlásit přes Google</button></div></div>
-<header class="topbar"><div class="nav"><button class="btn" id="prev">◂</button><h1 id="title"></h1><button class="btn" id="next">▸</button></div><div class="actions"><div class="switch"><button id="monthBtn">Měsíc</button><button id="weekBtn">Týden</button></div><button class="btn primary" id="today">Dnes</button><button class="btn" id="logout">Odhlásit</button></div></header>
-<main class="calendar" id="calendar"></main><div class="status" id="status">Připojuji…</div>
-<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div><div class="people-bg" id="peopleBg"><div class="people-box" id="peopleBox"></div></div>
+<div class="signin" id="signin">
+  <div class="signin-box">
+    <h2>Viola kalendář</h2>
+    <p>Přihlas se svým Google účtem a otevři společný kalendář.</p>
+    <button class="btn primary" id="login">Přihlásit přes Google</button>
+  </div>
+</div>
+
+<header>
+  <div class="nav">
+    <button class="btn" id="prev">◂</button>
+    <h1 id="title"></h1>
+    <button class="btn" id="next">▸</button>
+  </div>
+  <div class="actions">
+    <div class="switch">
+      <button id="monthBtn">Měsíc</button>
+      <button id="weekBtn">Týden</button>
+    </div>
+    <button class="btn primary" id="today">Dnes</button>
+    <button class="btn" id="logout">Odhlásit</button>
+  </div>
+</header>
+
+<main class="calendar" id="calendar"></main>
+<div class="status" id="status">Připojuji…</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="people-bg" id="peopleBg">
+  <div class="people-box" id="peopleBox"></div>
+</div>
+
 <script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import{getFirestore,collection,doc,setDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-const firebaseConfig={apiKey:'AIzaSyBhIPfNupVde-9WGdjak7qvjigGNPgYI',authDomain:'viola-kalendar.firebaseapp.com',projectId:'viola-kalendar',storageBucket:'viola-kalendar.firebasestorage.app',messagingSenderId:'313947429240',appId:'1:313947429240:web:5684c85b52607765f3d08d'};
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
-const N=['Po','Út','St','Čt','Pá','So','Ne'],ML=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
-const HOL={'2026-01-01':'Nový rok','2026-04-03':'Velký pátek','2026-04-06':'Velikonoční pondělí','2026-05-01':'Svátek práce','2026-05-08':'Den vítězství','2026-07-05':'Cyril a Metoděj','2026-07-06':'Jan Hus','2026-09-28':'Den české státnosti','2026-10-28':'Vznik ČSR','2026-11-17':'Den svobody','2026-12-24':'Štědrý den','2026-12-25':'1. svátek vánoční','2026-12-26':'2. svátek vánoční'};
-const PEOPLE_DEFAULT=['Martin','Saša','Petr','Dan','Doubravka','Veronika','Míša'];let data={},people=[...PEOPLE_DEFAULT],view='month',cursor=new Date(),unsub=null,modalKey='';
-const $=x=>document.getElementById(x),key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,get=(k,f)=>data[k+'_'+f]||'';
-async function put(k,f,v){data[k+'_'+f]=v;$('status').textContent='Ukládám…';await setDoc(doc(db,'calendar',k+'_'+f),{key:k,field:f,value:v,updatedAt:Date.now()});$('status').textContent='Synchronizováno'}
-function esc(v){return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function monday(d){let x=new Date(d),n=x.getDay();x.setDate(x.getDate()-(n===0?6:n-1));return x}
-function day(d,wd){let k=key(d),hol=HOL[k],today=key(new Date())===k;if(wd>4||hol){let e=document.createElement('div');e.className='cell off-cell '+(hol?'holiday':'');e.innerHTML=`<strong>${d.getDate()}. ${N[wd]}</strong><small>${hol?'Volno, '+hol:'Volno'}</small>`;return e}let addr=get(k,'address'),rain=get(k,'off')==='1',blink=get(k,'blink')==='1',note=get(k,'notes'),e=document.createElement('div');e.className='cell'+(today?' today':'');e.innerHTML=`<div class="head"><span class="num">${d.getDate()}</span><button class="drop" data-drop="${k}">💧</button><span class="dow">${N[wd]}</span></div><div class="hero"><div class="job ${rain?'rain':''}">${esc(rain?'Volno/Déšť':addr||'Zakázka')}${addr&&!rain?`<a class="mini map" href="${maps(addr)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">⌖</a>`:''}</div><div class="note ${blink?'blink':''}">${esc(note)||'<span style="color:var(--muted)">Poznámka</span>'}<button class="mini bell" data-bell="${k}">🔔</button></div></div>`;return e}
-function maps(v){return'https://www.google.com/maps/search/'+encodeURIComponent(v)}
-function render(){let root=$('calendar');root.innerHTML='';$('monthBtn').classList.toggle('active',view==='month');$('weekBtn').classList.toggle('active',view==='week');if(view==='week'){let s=monday(new Date()),r=document.createElement('div');r.className='row';N.forEach((n,i)=>r.innerHTML+=`<div class="weekday">${n}</div>`);root.appendChild(r);r=document.createElement('div');r.className='row';for(let i=0;i<7;i++){let d=new Date(s);d.setDate(s.getDate()+i);r.appendChild(day(d,i))}root.appendChild(r);let e=new Date(s);e.setDate(s.getDate()+6);$('title').textContent=`${e.getDate()}. ${e.getMonth()+1}. ${e.getFullYear()}`}else{$('title').textContent=`${ML[cursor.getMonth()]} ${cursor.getFullYear()}`;let first=new Date(cursor.getFullYear(),cursor.getMonth(),1),off=(first.getDay()+6)%7,total=new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate(),days=[];for(let i=0;i<off;i++)days.push(null);for(let i=1;i<=total;i++)days.push(new Date(cursor.getFullYear(),cursor.getMonth(),i));while(days.length%7)days.push(null);let h=document.createElement('div');h.className='row';N.forEach(n=>h.innerHTML+=`<div class="weekday">${n}</div>`);root.appendChild(h);for(let i=0;i<days.length;i+=7){let r=document.createElement('div');r.className='row';days.slice(i,i+7).forEach((d,j)=>r.appendChild(d?day(d,j):Object.assign(document.createElement('div'),{className:'cell empty'})));root.appendChild(r)}}bind()}
-function bind(){document.querySelectorAll('.cell:not(.off-cell):not(.empty)').forEach(c=>c.onclick=e=>{if(e.target.closest('button,a'))return;let k=c.querySelector('[data-drop]').dataset.drop;let p=k.split('-'),d=new Date(+p[0],+p[1]-1,+p[2]);openDay(k,d,(d.getDay()+6)%7)});document.querySelectorAll('[data-drop]').forEach(b=>b.onclick=e=>{e.stopPropagation();let k=b.dataset.drop;put(k,'off',get(k,'off')==='1'?'0':'1');render()});document.querySelectorAll('[data-bell]').forEach(b=>b.onclick=e=>{e.stopPropagation();let k=b.dataset.bell;put(k,'blink',get(k,'blink')==='1'?'0':'1');render()})}
-function openDay(k,d,wd){modalKey=k;let sel=JSON.parse(get(k,'people')||'[]');let h=`<h2>${d.toLocaleDateString('cs-CZ',{dateStyle:'full'})}</h2>`;[['address','Adresa'],['work','Práce'],['material','Materiál'],['price','Cena'],['notes','Poznámka']].forEach(([f,l])=>h+=`<div class="field"><label>${l}</label><textarea data-f="${f}" spellcheck="false">${esc(get(k,f))}</textarea></div>`);h+=`<div class="field"><div class="peopleline"><label>Lidé</label><button class="editpeople" id="editpeople">✏️</button></div><div class="people" id="people">${people.map(n=>`<button class="person ${sel.includes(n)?'selected':''}" data-person="${esc(n)}">${esc(n)}</button>`).join('')}</div></div><button class="close" id="close">Zavřít</button>`;$('modal').innerHTML=h;$('modalBg').classList.add('open');$('modal').querySelectorAll('textarea').forEach(t=>t.oninput=()=>put(k,t.dataset.f,t.value));$('modal').querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>{let l=JSON.parse(get(k,'people')||'[]'),i=l.indexOf(b.dataset.person);i>=0?l.splice(i,1):l.push(b.dataset.person);put(k,'people',JSON.stringify(l));b.classList.toggle('selected')});$('close').onclick=closeModal;$('editpeople').onclick=openPeopleEditor}
-function closeModal(){$('modalBg').classList.remove('open');render()}
-function openPeopleEditor(){let h='<h3>Upravit seznam lidí</h3><div>';people.forEach((n,i)=>h+=`<div class="pmi"><input value="${esc(n)}" data-i="${i}"><button data-del="${i}">✕</button></div>`);h+=`</div><div class="addperson"><input id="newname" placeholder="Nové jméno"><button id="addname">Přidat</button></div><button class="close" id="pmclose">Hotovo</button>`;$('peopleBox').innerHTML=h;$('peopleBg').classList.add('open');$('peopleBox').querySelectorAll('[data-i]').forEach(i=>i.onchange=()=>{people[i.dataset.i]=i.value.trim()||people[i.dataset.i];put('_settings','people',JSON.stringify(people))});$('peopleBox').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{people.splice(+b.dataset.del,1);put('_settings','people',JSON.stringify(people));openPeopleEditor()});$('addname').onclick=()=>{let v=$('newname').value.trim();if(v&&!people.includes(v)){people.push(v);put('_settings','people',JSON.stringify(people))}openPeopleEditor()};$('pmclose').onclick=()=>{$('peopleBg').classList.remove('open');openDay(modalKey,new Date(modalKey+'T00:00:00'),0)}}
-$('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>alert(e.message));$('logout').onclick=()=>signOut(auth);$('monthBtn').onclick=()=>{view='month';cursor=new Date();render()};$('weekBtn').onclick=()=>{view='week';cursor=new Date();render()};$('prev').onclick=()=>{if(view==='month')cursor.setMonth(cursor.getMonth()-1);else cursor.setDate(cursor.getDate()-7);render()};$('next').onclick=()=>{if(view==='month')cursor.setMonth(cursor.getMonth()+1);else cursor.setDate(cursor.getDate()+7);render()};$('today').onclick=()=>{cursor=new Date();view='month';render()};
-onAuthStateChanged(auth,u=>{if(!u){$('signin').style.display='grid';return}$('signin').style.display='none';if(unsub)unsub();unsub=onSnapshot(collection(db,'calendar'),snap=>{data={};snap.forEach(x=>{let v=x.data();data[v.key+'_'+v.field]=v.value});$('status').textContent='Synchronizováno';render()})});
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBhIPfNupVde-9WGdjak7qvjigGNPgYI",
+  authDomain: "viola-kalendar.firebaseapp.com",
+  projectId: "viola-kalendar",
+  storageBucket: "viola-kalendar.firebasestorage.app",
+  messagingSenderId: "313947429240",
+  appId: "1:313947429240:web:5684c85b52607765f3d08d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+const DAYS = ["Po","Út","St","Čt","Pá","So","Ne"];
+const MONTHS = [
+  "Leden","Únor","Březen","Duben","Květen","Červen",
+  "Červenec","Srpen","Září","Říjen","Listopad","Prosinec"
+];
+
+const HOLIDAYS = {
+  "2026-01-01":"Nový rok",
+  "2026-04-03":"Velký pátek",
+  "2026-04-06":"Velikonoční pondělí",
+  "2026-05-01":"Svátek práce",
+  "2026-05-08":"Den vítězství",
+  "2026-07-05":"Cyril a Metoděj",
+  "2026-07-06":"Jan Hus",
+  "2026-09-28":"Den české státnosti",
+  "2026-10-28":"Vznik ČSR",
+  "2026-11-17":"Den svobody",
+  "2026-12-24":"Štědrý den",
+  "2026-12-25":"1. svátek vánoční",
+  "2026-12-26":"2. svátek vánoční"
+};
+
+const DEFAULT_PEOPLE = [
+  "Martin","Saša","Petr","Dan",
+  "Doubravka","Veronika","Míša"
+];
+
+let data = {};
+let people = [...DEFAULT_PEOPLE];
+let view = "month";
+let cursor = new Date();
+let unsubscribe = null;
+let currentModalKey = "";
+
+const $ = id => document.getElementById(id);
+
+function dateKey(date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth()+1).padStart(2,"0"),
+    String(date.getDate()).padStart(2,"0")
+  ].join("-");
+}
+
+function read(key, field) {
+  return data[key + "_" + field] || "";
+}
+
+async function write(key, field, value) {
+  data[key + "_" + field] = value;
+  $("status").textContent = "Ukládám…";
+
+  await setDoc(
+    doc(db, "calendar", key + "_" + field),
+    {
+      key,
+      field,
+      value,
+      updatedAt: Date.now()
+    }
+  );
+
+  $("status").textContent = "Synchronizováno";
+}
+
+function safe(text) {
+  return String(text)
+    .replace(/&/g,"&")
+    .replace(/</g,"<")
+    .replace(/>/g,">")
+    .replace(/"/g,""");
+}
+
+function monday(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return d;
+}
+
+function isToday(date) {
+  return dateKey(date) === dateKey(new Date());
+}
+
+function mapUrl(address) {
+  return "https://www.google.com/maps/search/" +
+    encodeURIComponent(address);
+}
+
+function makeDay(date, weekdayIndex) {
+  const key = dateKey(date);
+  const holiday = HOLIDAYS[key];
+
+  if (weekdayIndex > 4 || holiday) {
+    const cell = document.createElement("div");
+    cell.className = "cell off-cell " + (holiday ? "holiday" : "");
+    cell.innerHTML =
+      "<strong>" + date.getDate() + ". " + DAYS[weekdayIndex] + "</strong>" +
+      "<small>" + (holiday ? "Volno, " + holiday : "Volno") + "</small>";
+    return cell;
+  }
+
+  const address = read(key,"address");
+  const rain = read(key,"off") === "1";
+  const blinking = read(key,"blink") === "1";
+  const note = read(key,"notes");
+
+  const cell = document.createElement("div");
+  cell.className = "cell" + (isToday(date) ? " today" : "");
+
+  const label = rain ? "Volno/Déšť" : (address || "Zakázka");
+  const map = address && !rain
+    ? "<a class='mini map' href='" + mapUrl(address) +
+      "' target='_blank' rel='noopener' onclick='event.stopPropagation()'>⌖</a>"
+    : "";
+
+  cell.innerHTML =
+    "<div class='head'>" +
+      "<span class='num'>" + date.getDate() + "</span>" +
+      "<button class='drop' data-drop='" + key + "'>💧</button>" +
+      "<span class='dow'>" + DAYS[weekdayIndex] + "</span>" +
+    "</div>" +
+    "<div class='hero'>" +
+      "<div class='job " + (rain ? "rain" : "") + "'>" +
+        safe(label) + map +
+      "</div>" +
+      "<div class='note " + (blinking ? "blink" : "") + "'>" +
+        (note ? safe(note) : "<span style='color:var(--muted)'>Poznámka</span>") +
+        "<button class='mini bell' data-bell='" + key + "'>🔔</button>" +
+      "</div>" +
+    "</div>";
+
+  cell.addEventListener("click", event => {
+    if (event.target.closest("button,a")) return;
+    openDay(key,date,weekdayIndex);
+  });
+
+  return cell;
+}
+
+function render() {
+  const root = $("calendar");
+  root.innerHTML = "";
+
+  $("monthBtn").classList.toggle("active", view === "month");
+  $("weekBtn").classList.toggle("active", view === "week");
+
+  if (view === "week") {
+    const start = monday(new Date());
+    const rowHead = document.createElement("div");
+    rowHead.className = "row";
+
+    DAYS.forEach(day => {
+      rowHead.innerHTML += "<div class='weekday'>" + day + "</div>";
+    });
+
+    root.appendChild(rowHead);
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(start);
+      date.setDate(start.getDate() + i);
+      row.appendChild(makeDay(date,i));
+    }
+
+    root.appendChild(row);
+    $("title").textContent =
+      start.toLocaleDateString("cs-CZ") + " až " +
+      new Date(start.getFullYear(),start.getMonth(),start.getDate()+6)
+        .toLocaleDateString("cs-CZ");
+
+  } else {
+    $("title").textContent =
+      MONTHS[cursor.getMonth()] + " " + cursor.getFullYear();
+
+    const head = document.createElement("div");
+    head.className = "row";
+
+    DAYS.forEach(day => {
+      head.innerHTML += "<div class='weekday'>" + day + "</div>";
+    });
+
+    root.appendChild(head);
+
+    const first = new Date(cursor.getFullYear(),cursor.getMonth(),1);
+    const offset = (first.getDay() + 6) % 7;
+    const total = new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate();
+    const days = [];
+
+    for (let i=0; i<offset; i++) days.push(null);
+    for (let i=1; i<=total; i++) {
+      days.push(new Date(cursor.getFullYear(),cursor.getMonth(),i));
+    }
+    while (days.length % 7) days.push(null);
+
+    for (let i=0; i<days.length; i+=7) {
+      const row = document.createElement("div");
+      row.className = "row";
+
+      days.slice(i,i+7).forEach((date,index) => {
+        row.appendChild(
+          date ? makeDay(date,index) :
+          Object.assign(document.createElement("div"),{className:"cell empty"})
+        );
+      });
+
+      root.appendChild(row);
+    }
+  }
+
+  bindButtons();
+}
+
+function bindButtons() {
+  document.querySelectorAll("[data-drop]").forEach(button => {
+    button.onclick = event => {
+      event.stopPropagation();
+
+      const key = button.dataset.drop;
+      const current = read(key,"off") === "1";
+
+      write(key,"off",current ? "0" : "1");
+      render();
+    };
+  });
+
+  document.querySelectorAll("[data-bell]").forEach(button => {
+    button.onclick = event => {
+      event.stopPropagation();
+
+      const key = button.dataset.bell;
+      const current = read(key,"blink") === "1";
+
+      write(key,"blink",current ? "0" : "1");
+      render();
+    };
+  });
+}
+
+function openDay(key,date,weekdayIndex) {
+  currentModalKey = key;
+
+  const fields = [
+    ["address","Adresa"],
+    ["work","Práce"],
+    ["material","Materiál"],
+    ["price","Cena"],
+    ["notes","Poznámka"]
+  ];
+
+  let html =
+    "<h2>" + date.toLocaleDateString("cs-CZ",{dateStyle:"full"}) + "</h2>";
+
+  fields.forEach(([field,label]) => {
+    html +=
+      "<div class='field'>" +
+        "<label>" + label + "</label>" +
+        "<textarea data-field='" + field +
+          "' spellcheck='false'>" + safe(read(key,field)) + "</textarea>" +
+      "</div>";
+  });
+
+  html +=
+    "<div class='field'>" +
+      "<div class='peopleline'>" +
+        "<label>Lidé</label>" +
+        "<button class='editpeople' id='editPeople'>✏️</button>" +
+      "</div>" +
+      "<div class='people' id='peopleList'>";
+
+  const selected = JSON.parse(read(key,"people") || "[]");
+
+  people.forEach(person => {
+    html +=
+      "<button class='person " +
+      (selected.includes(person) ? "selected" : "") +
+      "' data-person='" + safe(person) + "'>" +
+      safe(person) + "</button>";
+  });
+
+  html +=
+      "</div>" +
+    "</div>" +
+    "<button class='close' id='closeDay'>Zavřít</button>";
+
+  $("modal").innerHTML = html;
+  $("modalBg").classList.add("open");
+
+  $("modal").querySelectorAll("textarea").forEach(area => {
+    area.oninput = () =>
+      write(key,area.dataset.field,area.value);
+  });
+
+  $("modal").querySelectorAll("[data-person]").forEach(button => {
+    button.onclick = () => {
+      const list = JSON.parse(read(key,"people") || "[]");
+      const person = button.dataset.person;
+      const index = list.indexOf(person);
+
+      if (index >= 0) list.splice(index,1);
+      else list.push(person);
+
+      write(key,"people",JSON.stringify(list));
+      button.classList.toggle("selected");
+    };
+  });
+
+  $("editPeople").onclick = openPeopleEditor;
+  $("closeDay").onclick = closeModal;
+}
+
+function closeModal() {
+  $("modalBg").classList.remove("open");
+  render();
+}
+
+function openPeopleEditor() {
+  let html = "<h3>Upravit seznam lidí</h3>";
+
+  people.forEach((person,index) => {
+    html +=
+      "<div class='pmi'>" +
+        "<input value='" + safe(person) + "' data-person-index='" + index + "'>" +
+        "<button data-delete-person='" + index + "'>✕</button>" +
+      "</div>";
+  });
+
+  html +=
+    "<div class='addperson'>" +
+      "<input id='newPerson' placeholder='Nové jméno'>" +
+      "<button id='addPerson'>Přidat</button>" +
+    "</div>" +
+    "<button class='close' id='closePeople'>Hotovo</button>";
+
+  $("peopleBox").innerHTML = html;
+  $("peopleBg").classList.add("open");
+
+  $("peopleBox").querySelectorAll("[data-person-index]").forEach(input => {
+    input.onchange = () => {
+      people[Number(input.dataset.personIndex)] = input.value.trim();
+      write("_settings","people",JSON.stringify(people));
+    };
+  });
+
+  $("peopleBox").querySelectorAll("[data-delete-person]").forEach(button => {
+    button.onclick = () => {
+      people.splice(Number(button.dataset.deletePerson),1);
+      write("_settings","people",JSON.stringify(people));
+      openPeopleEditor();
+    };
+  });
+
+  $("addPerson").onclick = () => {
+    const input = $("newPerson");
+    const name = input.value.trim();
+
+    if (name && !people.includes(name)) {
+      people.push(name);
+      write("_settings","people",JSON.stringify(people));
+    }
+
+    openPeopleEditor();
+  };
+
+  $("closePeople").onclick = () => {
+    $("peopleBg").classList.remove("open");
+  };
+}
+
+$("login").onclick = () =>
+  signInWithPopup(auth,provider).catch(error => alert(error.message));
+
+$("logout").onclick = () => signOut(auth);
+
+$("monthBtn").onclick = () => {
+  view = "month";
+  cursor = new Date();
+  render();
+};
+
+$("weekBtn").onclick = () => {
+  view = "week";
+  cursor = new Date();
+  render();
+};
+
+$("prev").onclick = () => {
+  if (view === "month") {
+    cursor.setMonth(cursor.getMonth()-1);
+  } else {
+    cursor.setDate(cursor.getDate()-7);
+  }
+  render();
+};
+
+$("next").onclick = () => {
+  if (view === "month") {
+    cursor.setMonth(cursor.getMonth()+1);
+  } else {
+    cursor.setDate(cursor.getDate()+7);
+  }
+  render();
+};
+
+$("today").onclick = () => {
+  cursor = new Date();
+  view = "month";
+  render();
+};
+
+onAuthStateChanged(auth,user => {
+  if (!user) {
+    $("signin").style.display = "grid";
+    return;
+  }
+
+  $("signin").style.display = "none";
+
+  if (unsubscribe) unsubscribe();
+
+  unsubscribe = onSnapshot(
+    collection(db,"calendar"),
+    snapshot => {
+      data = {};
+
+      snapshot.forEach(item => {
+        const value = item.data();
+        data[value.key + "_" + value.field] = value.value;
+      });
+
+      const settings = data["_settings_people"];
+      if (settings) {
+        try {
+          people = JSON.parse(settings);
+        } catch {}
+      }
+
+      $("status").textContent = "Synchronizováno";
+      render();
+    },
+    error => {
+      $("status").textContent = "Chyba synchronizace";
+      console.error(error);
+    }
+  );
+});
+
 render();
 </script>
-</body></html>
+</body>
+</html>
