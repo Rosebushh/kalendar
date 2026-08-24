@@ -1,0 +1,288 @@
+<!doctype html><html lang="cs"><head>
+<!-- skill:chrome -->
+<style>
+/* Credit line — bottom-right */
+.design-ui-credit {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  font: 11px/1 system-ui, sans-serif;
+  color: rgba(128,128,128,0.5);
+  pointer-events: none;
+  z-index: 2147483647;
+  transition: opacity 0.4s ease;
+  user-select: none;
+  letter-spacing: 0.02em;
+}
+
+/* Hide chrome on touch devices */
+@media (hover: none) {
+  .design-ui-credit { display: none; }
+}
+
+/* Print fixes */
+@media print {
+  * {
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
+  }
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .design-ui-credit { display: none !important; }
+}
+
+</style>
+<script>
+(function () {
+    // Design-ui pages are single compositions, so the whole body is editable.
+    function markEditable() {
+        document.body.classList.add('artifact-editable');
+    }
+
+    // Credit badge with idle-fade. Hover devices only.
+    function initChromeUI() {
+        if (!matchMedia('(hover: hover)').matches) return;
+
+        var credit = document.createElement('div');
+        credit.className = 'design-ui-credit';
+        credit.setAttribute('aria-hidden', 'true');
+        credit.innerHTML = '\u{1F49C} by ClickUp Brain';
+        document.body.appendChild(credit);
+
+        var timer = null;
+        var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
+        fade(true);
+        var show = function () {
+            fade(false);
+            clearTimeout(timer);
+            timer = setTimeout(function () { fade(true); }, 3000);
+        };
+        document.addEventListener('mousemove', show);
+        show();
+    }
+
+    function init() {
+        markEditable();
+        initChromeUI();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+</script>
+<!-- /skill:chrome --><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Denní provozní kalendář</title>
+<meta name="theme-color" content="#e8ddd0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kalendář">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--bg:oklch(97% .008 65);--paper:oklch(99% .005 65);--ink:oklch(22% .01 65);--muted:oklch(55% .01 65);--line:oklch(85% .012 65);--job:oklch(95% .025 55);--jobline:oklch(78% .07 55);--accent:oklch(48% .13 55);--note:oklch(94.5% .03 175);--noteline:oklch(76% .08 175);--weekend:oklch(94% .015 280);--weekendink:oklch(53% .06 280);--holiday:oklch(93% .025 340);--holidayink:oklch(45% .08 340);--blink:oklch(80% .12 25);--green:oklch(55% .14 155)}*{box-sizing:border-box;margin:0}body{padding:18px 24px;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:16px}button,textarea,input{font:inherit}header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}.nav,.actions,.switch{display:flex;align-items:center;gap:8px}.nav h1{font-size:1.55rem;min-width:220px;text-align:center}.btn{height:40px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);cursor:pointer;padding:0 14px;font-weight:650}.primary{background:var(--accent);color:oklch(99% .005 65);border-color:transparent}.switch{padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}.switch button{height:34px;border:0;border-radius:7px;padding:0 14px;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}.switch button.active{background:var(--accent);color:oklch(99% .005 65)}
+.calendar{display:flex;flex-direction:column;gap:8px}.row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 82px 82px;gap:8px}.weekday{text-align:center;color:var(--muted);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px}.weekday:nth-child(n+6){color:var(--weekendink)}
+.cell{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;aspect-ratio:1/.92;display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:box-shadow .15s}.cell:hover{box-shadow:0 4px 16px oklch(0% 0 0/.07)}.cell.today{border-color:var(--accent);box-shadow:0 0 0 3px oklch(48% .13 55/.14)}.empty{background:transparent;border-color:transparent;cursor:default;aspect-ratio:auto;min-height:0}.empty:hover{box-shadow:none}
+.top{display:flex;align-items:center;position:relative;flex-shrink:0;min-height:28px}.num{font-size:1.05rem;font-weight:800}.today .num{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:oklch(99% .005 65);font-size:.88rem}.dow{font-size:.72rem;color:var(--muted);text-transform:uppercase;margin-left:auto}.drop-btn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:6px;background:var(--paper);cursor:pointer;font-size:.72rem;color:var(--weekendink);position:absolute;left:50%;transform:translateX(-50%)}.drop-btn:hover{background:var(--weekend)}
+.hero{display:flex;flex-direction:column;flex:1;gap:4px;min-height:0}
+.zakaz{position:relative;width:100%;flex:1.5;min-height:0;background:var(--job);border:1px solid var(--jobline);border-radius:8px;padding:10px 11px;padding-right:34px;font-size:1rem;font-weight:700;line-height:1.35;word-break:break-word;overflow:hidden}.zakaz.rain{background:var(--weekend);border-color:var(--line);color:var(--weekendink)}.map-btn{position:absolute;right:5px;bottom:5px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:1px solid var(--jobline);border-radius:6px;background:var(--paper);text-decoration:none;color:oklch(45% .12 145);cursor:pointer}.map-btn.off{opacity:.35;pointer-events:none}
+.note-box{position:relative;width:100%;flex:1;min-height:0;background:var(--note);border:1px solid var(--noteline);border-radius:8px;padding:10px 11px;padding-right:34px;font-size:.92rem;line-height:1.35;word-break:break-word;overflow:hidden}.note-box.blinking{background:var(--blink);border-color:oklch(68% .1 25);animation:blink 1s ease-in-out infinite}@keyframes blink{0%,100%{background:var(--blink)}50%{background:oklch(92% .04 25)}}.bell-btn{position:absolute;right:5px;bottom:5px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:1px solid var(--noteline);border-radius:6px;background:var(--paper);cursor:pointer;font-size:.72rem;color:oklch(38% .1 175)}.bell-btn.active{background:var(--blink);border-color:oklch(65% .1 25);color:oklch(35% .1 25)}
+.off-cell{justify-content:center;align-items:center;background:var(--weekend);color:var(--weekendink);text-align:center;padding:10px;cursor:default;aspect-ratio:auto}.off-cell:hover{box-shadow:none}.holiday{background:var(--holiday);color:var(--holidayink);border-color:oklch(84% .05 340)}.off-cell strong{font-size:.88rem}.off-cell small{font-size:.68rem;margin-top:4px}
+.modal-bg{position:fixed;inset:0;background:oklch(0% 0 0/.35);z-index:100;display:none;place-items:center}.modal-bg.open{display:grid}.modal{background:var(--paper);border-radius:16px;padding:28px;width:min(560px,94vw);max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px oklch(0% 0 0/.2)}.modal h2{font-size:1.3rem;margin-bottom:16px}.modal-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}.modal-field label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}.modal-field textarea{width:100%;border:1px solid var(--jobline);border-radius:8px;background:var(--job);padding:10px 12px;font-size:1rem;resize:none;overflow:hidden;line-height:1.4;min-height:46px}.modal-field textarea:focus{outline:3px solid oklch(48% .13 55/.28);outline-offset:1px}
+.people-header{display:flex;align-items:center;gap:8px}.people-header label{margin:0}.people-edit-btn{border:1px solid var(--line);border-radius:5px;background:var(--paper);width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:.78rem;color:var(--muted)}.people-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.person{padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:var(--paper);font-size:.88rem;font-weight:600;cursor:pointer;user-select:none;transition:background .12s,border-color .12s,color .12s}.person.active{background:oklch(88% .08 155);border-color:var(--green);color:oklch(30% .08 155)}
+.modal-close{background:var(--accent);color:oklch(99% .005 65);border:0;border-radius:8px;padding:10px 22px;font-weight:700;cursor:pointer;font-size:.9rem}
+.people-modal-bg{position:fixed;inset:0;background:oklch(0% 0 0/.25);z-index:200;display:none;place-items:center}.people-modal-bg.open{display:grid}.people-modal{background:var(--paper);border-radius:14px;padding:22px;width:min(380px,90vw);max-height:70vh;overflow-y:auto;box-shadow:0 14px 40px oklch(0% 0 0/.18)}.people-modal h3{font-size:1.1rem;margin-bottom:12px}.pm-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}.pm-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line);border-radius:8px}.pm-item input{flex:1;border:0;background:transparent;font-size:.9rem;outline:none;font-weight:500}.pm-item button{border:0;background:transparent;cursor:pointer;color:oklch(55% .08 25);font-size:.9rem}.pm-add{display:flex;gap:6px}.pm-add input{flex:1;border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:.88rem}.pm-add button{border:1px solid var(--line);border-radius:7px;background:var(--paper);padding:7px 12px;font-weight:600;cursor:pointer;font-size:.85rem}.pm-close{margin-top:14px;background:var(--accent);color:oklch(99% .005 65);border:0;border-radius:7px;padding:8px 18px;font-weight:700;cursor:pointer}
+.save{position:fixed;bottom:16px;right:18px;background:oklch(35% .08 155);color:oklch(95% .01 155);padding:8px 14px;border-radius:7px;font-size:.78rem;opacity:0}.save.show{opacity:1}
+.sync-status{position:fixed;bottom:16px;left:18px;font-size:.72rem;color:var(--muted)}
+.setup-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:grid;place-items:center}.setup-box{background:var(--paper);border-radius:16px;padding:32px;width:min(440px,90vw);box-shadow:0 10px 40px oklch(0% 0 0/.1);text-align:center}.setup-box h2{margin-bottom:12px}.setup-box p{color:var(--muted);font-size:.88rem;margin-bottom:18px}.setup-box input{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.9rem;margin-bottom:14px}.setup-box button{background:var(--accent);color:oklch(99% .005 65);border:0;border-radius:8px;padding:12px 28px;font-weight:700;font-size:1rem;cursor:pointer}
+.week-mode .row{grid-template-columns:repeat(7,minmax(0,1fr))}.week-mode .cell{aspect-ratio:auto;min-height:400px}
+@media(max-width:700px){body{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.weekday:nth-child(n+3){display:none}.cell{aspect-ratio:auto;min-height:180px}.week-mode .row{grid-template-columns:1fr}.week-mode .weekday{display:none}}
+</style></head><body>
+<div class="setup-overlay" id="setup" style="display:none"><div class="setup-box"><h2>Nastavení synchronizace</h2><p>Vlož URL z Google Apps Script (viz návod)</p><input id="apiUrl" placeholder="https://script.google.com/macros/s/..."><button onclick="saveApi()">Uložit a spustit</button></div></div>
+<header><div class="nav"><button class="btn" onclick="move(-1)">◂</button><h1 id="title"></h1><button class="btn" onclick="move(1)">▸</button></div><div class="actions"><div class="switch"><button id="monthBtn" onclick="setView('month')">Měsíc</button><button id="weekBtn" onclick="setView('week')">Týden</button></div><button class="btn primary" onclick="goToday()">Dnes</button></div></header>
+<main class="calendar" id="calendar"></main>
+<div class="save" id="saved">✓ Uloženo</div>
+<div class="sync-status" id="syncStatus"></div>
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
+<div class="people-modal-bg" id="pmBg" onclick="if(event.target===this)closePeopleEditor()"><div class="people-modal" id="pmModal"></div></div>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+
+const N=['Po','Út','St','Čt','Pá','So','Ne'],ML=['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+const HOL={'2026-01-01':'Nový rok','2026-04-03':'Velký pátek','2026-04-06':'Velikonoční pondělí','2026-05-01':'Svátek práce','2026-05-08':'Den vítězství','2026-07-05':'Cyril a Metoděj','2026-07-06':'Jan Hus','2026-09-28':'Den české státnosti','2026-10-28':'Vznik ČSR','2026-11-17':'Den svobody','2026-12-24':'Štědrý den','2026-12-25':'1. svátek vánoční','2026-12-26':'2. svátek vánoční'};
+const DEFAULT_PEOPLE=['Martin','Saša','Petr','Dan','Doubravka','Veronika','Míša'];
+
+// --- SYNC ENGINE ---
+let DB={};
+let API_URL=localStorage.getItem('cal_api_url')||'';
+let syncTimer=null;
+
+function showSetup(){document.getElementById('setup').style.display='grid'}
+function saveApi(){
+  let url=document.getElementById('apiUrl').value.trim();
+  if(!url)return;
+  API_URL=url;
+  localStorage.setItem('cal_api_url',url);
+  document.getElementById('setup').style.display='none';
+  loadAll();
+}
+
+async function loadAll(){
+  if(!API_URL)return;
+  try{
+    document.getElementById('syncStatus').textContent='Načítám...';
+    let r=await fetch(API_URL+'?action=get_all');
+    let data=await r.json();
+    DB=data;
+    // Also store locally as cache
+    localStorage.setItem('cal_db_cache',JSON.stringify(DB));
+    document.getElementById('syncStatus').textContent='✓ Synchronizováno';
+    render();
+  }catch(e){
+    document.getElementById('syncStatus').textContent='⚠ Offline (lokální data)';
+    let cached=localStorage.getItem('cal_db_cache');
+    if(cached)DB=JSON.parse(cached);
+    render();
+  }
+}
+
+async function saveRemote(key,field,value){
+  DB[key+'_'+field]=value;
+  localStorage.setItem('cal_db_cache',JSON.stringify(DB));
+  if(!API_URL)return;
+  try{
+    await fetch(API_URL,{method:'POST',body:JSON.stringify({key,field,value}),headers:{'Content-Type':'text/plain'}});
+    document.getElementById('syncStatus').textContent='✓ Synchronizováno';
+  }catch(e){
+    document.getElementById('syncStatus').textContent='⚠ Uloženo lokálně';
+  }
+}
+
+// Auto-refresh every 30s
+function startAutoSync(){
+  if(syncTimer)clearInterval(syncTimer);
+  syncTimer=setInterval(loadAll,30000);
+}
+
+function get(k,f){return DB[k+'_'+f]||''}
+function put(k,f,v){
+  DB[k+'_'+f]=v;
+  saveRemote(k,f,v);
+  let e=document.getElementById('saved');e.classList.add('show');clearTimeout(window.ft);window.ft=setTimeout(()=>e.classList.remove('show'),900);
+}
+
+// --- APP LOGIC ---
+function getPeople(){let s=DB['_settings_people'];if(s){try{return JSON.parse(s)}catch(e){}}return DEFAULT_PEOPLE}
+function setPeople(l){put('_settings','people',JSON.stringify(l))}
+
+let now=new Date,y=now.getFullYear(),m=now.getMonth(),view=localStorage.getItem('cal_view')||'month',weekOffset=0;
+const key=(a,b,c)=>`${a}-${String(b+1).padStart(2,'0')}-${String(c).padStart(2,'0')}`;
+function esc(v){return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function grow(e){e.style.height='auto';e.style.height=e.scrollHeight+'px'}
+function mapsUrl(v){return'https://www.google.com/maps/search/'+encodeURIComponent(v)}
+function isToday(a,b,c){let n=new Date;return a===n.getFullYear()&&b===n.getMonth()&&c===n.getDate()}
+function getCurrentMonday(){let d=new Date,day=d.getDay(),diff=d.getDate()-day+(day===0?-6:1);let mon=new Date(d.getFullYear(),d.getMonth(),diff);mon.setDate(mon.getDate()+weekOffset*7);return mon}
+function setView(v){view=v;localStorage.setItem('cal_view',v);weekOffset=0;let n=new Date;y=n.getFullYear();m=n.getMonth();render()}
+function move(n){if(view==='week'){weekOffset+=n;render()}else{m+=n;if(m<0){m=11;y--}if(m>11){m=0;y++}render()}}
+function goToday(){weekOffset=0;let n=new Date;y=n.getFullYear();m=n.getMonth();render()}
+function getSelected(k){let s=get(k,'people');try{return s?JSON.parse(s):[]}catch(e){return[]}}
+function togglePerson(k,name){let l=getSelected(k),i=l.indexOf(name);if(i>=0)l.splice(i,1);else l.push(name);put(k,'people',JSON.stringify(l))}
+
+function makeCell(yy,mm,dd,wd){
+  let k=key(yy,mm,dd),hol=HOL[k];
+  if(wd>4||hol){let e=document.createElement('div');e.className='cell off-cell '+(hol?'holiday':'');e.innerHTML=`<strong>${dd}. ${N[wd]}</strong><small>${hol?'Volno, '+hol:'Volno'}</small>`;return e}
+  let addr=get(k,'address'),rain=get(k,'off')==='1',blink=get(k,'blink')==='1';
+  let displayText=rain?'Volno/Déšť':(addr||'Zakázka');
+  let noteText=get(k,'notes');
+  let mapActive=addr.trim()&&!rain;
+  let e=document.createElement('div');
+  e.className='cell'+(isToday(yy,mm,dd)?' today':'');
+  e.innerHTML=`<div class="top"><span class="num">${dd}</span><button class="drop-btn" data-drop="${k}" title="Volno/Déšť">💧</button><span class="dow">${N[wd]}</span></div><div class="hero"><div class="zakaz${rain?' rain':''}">${esc(displayText)}<a class="map-btn ${mapActive?'':'off'}" href="${mapActive?mapsUrl(addr):'#'}" target="_blank" rel="noopener" title="Google Maps"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c3.5-3 7-6.8 7-12a7 7 0 1 0-14 0c0 5.2 3.5 9 7 12Z"/><circle cx="12" cy="9" r="2.5" fill="currentColor" stroke="none"/></svg></a></div><div class="note-box ${blink?'blinking':''}">${esc(noteText)||'<span style="color:var(--muted)">Poznámka</span>'}<button class="bell-btn ${blink?'active':''}" data-blink="${k}" title="Upomínka">🔔</button></div></div>`;
+  return e;
+}
+
+function openModal(k,yy,mm,dd,wd){
+  let selected=getSelected(k),people=getPeople();
+  let modal=document.getElementById('modal');
+  let html=`<h2>${dd}. ${ML[mm].toLowerCase()} ${yy}, ${N[wd]}</h2><div class="modal-fields">`;
+  html+=`<div class="modal-field"><label>Adresa</label><textarea rows="2" data-k="${k}" data-f="address" spellcheck="false">${esc(get(k,'address'))}</textarea></div>`;
+  html+=`<div class="modal-field"><label>Práce</label><textarea rows="2" data-k="${k}" data-f="work" spellcheck="false">${esc(get(k,'work'))}</textarea></div>`;
+  html+=`<div class="modal-field"><label>Materiál</label><textarea rows="2" data-k="${k}" data-f="material" spellcheck="false">${esc(get(k,'material'))}</textarea></div>`;
+  html+=`<div class="modal-field"><div class="people-header"><label>Lidé</label><button class="people-edit-btn" onclick="openPeopleEditor()" title="Upravit seznam jmen">✏️</button></div><div class="people-list" id="pList">`;
+  people.forEach(name=>{html+=`<span class="person ${selected.includes(name)?'active':''}" data-name="${name}">${name}</span>`});
+  html+=`</div></div>`;
+  html+=`<div class="modal-field"><label>Cena</label><textarea rows="1" data-k="${k}" data-f="price" spellcheck="false">${esc(get(k,'price'))}</textarea></div>`;
+  html+=`<div class="modal-field"><label>Poznámka</label><textarea rows="3" data-k="${k}" data-f="notes" spellcheck="false">${esc(get(k,'notes'))}</textarea></div>`;
+  html+=`</div><button class="modal-close" onclick="closeModal()">Zavřít</button>`;
+  modal.innerHTML=html;
+  document.getElementById('modalBg').classList.add('open');
+  modal.querySelectorAll('textarea').forEach(t=>{grow(t);t.addEventListener('input',function(){put(this.dataset.k,this.dataset.f,this.value);grow(this)})});
+  modal.querySelectorAll('.person').forEach(p=>p.addEventListener('click',function(){togglePerson(k,this.dataset.name);this.classList.toggle('active')}));
+  window._mk=k;window._md=[yy,mm,dd,wd];
+}
+
+function openPeopleEditor(){
+  let people=getPeople(),pm=document.getElementById('pmModal');
+  let html=`<h3>Upravit seznam lidí</h3><div class="pm-list" id="pmList">`;
+  people.forEach((name,i)=>{html+=`<div class="pm-item"><input value="${esc(name)}" data-idx="${i}" onchange="renamePerson(${i},this.value)"><button onclick="deletePerson(${i})">✕</button></div>`});
+  html+=`</div><div class="pm-add"><input id="pmNew" placeholder="Nové jméno..."><button onclick="addNewPerson()">Přidat</button></div><button class="pm-close" onclick="closePeopleEditor()">Hotovo</button>`;
+  pm.innerHTML=html;
+  document.getElementById('pmBg').classList.add('open');
+}
+function renamePerson(i,val){let l=getPeople();l[i]=val.trim()||l[i];setPeople(l)}
+function deletePerson(i){let l=getPeople();l.splice(i,1);setPeople(l);openPeopleEditor()}
+function addNewPerson(){let inp=document.getElementById('pmNew'),v=inp.value.trim();if(!v)return;let l=getPeople();if(!l.includes(v)){l.push(v);setPeople(l)}inp.value='';openPeopleEditor()}
+function closePeopleEditor(){document.getElementById('pmBg').classList.remove('open');let[k,yy,mm,dd,wd]=[window._mk,...window._md];openModal(k,yy,mm,dd,wd)}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');render()}
+
+function render(){
+  document.body.classList.toggle('week-mode',view==='week');
+  monthBtn.classList.toggle('active',view==='month');
+  weekBtn.classList.toggle('active',view==='week');
+  let root=document.getElementById('calendar');root.innerHTML='';
+  if(view==='week'){
+    let mon=getCurrentMonday();
+    let h=document.createElement('div');h.className='row';N.forEach(n=>h.innerHTML+=`<div class="weekday">${n}</div>`);root.appendChild(h);
+    let r=document.createElement('div');r.className='row';
+    for(let i=0;i<7;i++){let d=new Date(mon);d.setDate(d.getDate()+i);r.appendChild(makeCell(d.getFullYear(),d.getMonth(),d.getDate(),i))}
+    root.appendChild(r);
+    let end=new Date(mon);end.setDate(end.getDate()+6);
+    title.textContent=`${mon.getDate()}. ${mon.getMonth()+1}. až ${end.getDate()}. ${end.getMonth()+1}.`;
+  }else{
+    title.textContent=`${ML[m]} ${y}`;
+    let h=document.createElement('div');h.className='row';N.forEach(n=>h.innerHTML+=`<div class="weekday">${n}</div>`);root.appendChild(h);
+    let base=new Date(y,m,1),off=(base.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),weeks=Math.ceil((off+days)/7);
+    for(let w=0;w<weeks;w++){let r=document.createElement('div');r.className='row';for(let wd=0;wd<7;wd++){let dd=w*7+wd-off+1;r.appendChild(dd<1||dd>days?Object.assign(document.createElement('div'),{className:'cell empty'}):makeCell(y,m,dd,wd))}root.appendChild(r)}
+  }
+  bind();
+}
+
+function bind(){
+  let root=document.getElementById('calendar');
+  root.querySelectorAll('.cell:not(.off-cell):not(.empty)').forEach(cell=>{
+    cell.addEventListener('click',function(e){
+      if(e.target.closest('[data-drop],[data-blink],.map-btn'))return;
+      let k=this.querySelector('[data-drop]').dataset.drop;
+      let parts=k.split('-');
+      let yy=+parts[0],mm=+parts[1]-1,dd=+parts[2];
+      let wd=(new Date(yy,mm,dd).getDay()+6)%7;
+      openModal(k,yy,mm,dd,wd);
+    });
+  });
+  root.querySelectorAll('[data-drop]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();let k=b.dataset.drop,on=get(k,'off')==='1';put(k,'off',on?'0':'1');render()}));
+  root.querySelectorAll('[data-blink]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();let k=b.dataset.blink,on=get(k,'blink')==='1';put(k,'blink',on?'0':'1');render()}));
+  root.querySelectorAll('.map-btn').forEach(a=>a.addEventListener('click',e=>{e.stopPropagation()}));
+}
+
+// INIT
+if(!API_URL){
+  showSetup();
+} else {
+  loadAll();
+  startAutoSync();
+}
+</script></body></html>
