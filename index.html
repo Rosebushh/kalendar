@@ -103,7 +103,7 @@
 @media(max-width:700px){body{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.weekday:nth-child(n+3){display:none}.cell{aspect-ratio:auto;min-height:180px}.week-mode .row{grid-template-columns:1fr}.week-mode .weekday{display:none}}
 </style></head><body>
 <div class="setup-overlay" id="setup" style="display:none"><div class="setup-box"><h2>Nastavení synchronizace</h2><p>Vlož URL z Google Apps Script (viz návod)</p><input id="apiUrl" placeholder="https://script.google.com/macros/s/..."><button onclick="saveApi()">Uložit a spustit</button></div></div>
-<header><div class="nav"><button class="btn" onclick="move(-1)">◂</button><h1 id="title"></h1><button class="btn" onclick="move(1)">▸</button></div><div class="actions"><div class="switch"><button id="monthBtn" onclick="setView('month')">Měsíc</button><button id="weekBtn" onclick="setView('week')">Týden</button></div><button class="btn primary" onclick="goToday()">Dnes</button></div></header>
+<header><div class="nav"><button class="btn" onclick="move(-1)">◂</button><h1 id="title"></h1><button class="btn" onclick="move(1)">▸</button></div><div class="actions"><div class="switch"><button id="monthBtn" onclick="setView('month')">Měsíc</button><button id="weekBtn" onclick="setView('week')">Týden</button></div><button class="btn primary" onclick="goToday()">Dnes</button><button class="btn" onclick="showSetup()">Synchronizace</button></div></header>
 <main class="calendar" id="calendar"></main>
 <div class="save" id="saved">✓ Uloženo</div>
 <div class="sync-status" id="syncStatus"></div>
@@ -121,7 +121,7 @@ let DB={};
 let API_URL=localStorage.getItem('cal_api_url')||'';
 let syncTimer=null;
 
-function showSetup(){document.getElementById('setup').style.display='grid'}
+function showSetup(){document.getElementById('apiUrl').value=API_URL;document.getElementById('setup').style.display='grid'}
 function saveApi(){
   let url=document.getElementById('apiUrl').value.trim();
   if(!url)return;
@@ -171,12 +171,14 @@ function startAutoSync(){
 
 function get(k,f){return DB[k+'_'+f]||''}
 const pendingWrites={};
+const dirtyValues={};
 function put(k,f,v){
-  DB[k+'_'+f]=v;
-  localStorage.setItem('cal_db_cache',JSON.stringify(DB));
   const id=k+'_'+f;
+  DB[id]=v;
+  dirtyValues[id]=v;
+  localStorage.setItem('cal_db_cache',JSON.stringify(DB));
   clearTimeout(pendingWrites[id]);
-  pendingWrites[id]=setTimeout(()=>saveRemote(k,f,DB[k+'_'+f]),2500);
+  pendingWrites[id]=setTimeout(async()=>{await saveRemote(k,f,dirtyValues[id]); delete pendingWrites[id]; delete dirtyValues[id]},2500);
   let e=document.getElementById('saved');e.classList.add('show');clearTimeout(window.ft);window.ft=setTimeout(()=>e.classList.remove('show'),900);
 }
 
