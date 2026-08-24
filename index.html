@@ -169,9 +169,13 @@ function startAutoSync(){
 }
 
 function get(k,f){return DB[k+'_'+f]||''}
+const pendingWrites={};
 function put(k,f,v){
   DB[k+'_'+f]=v;
-  saveRemote(k,f,v);
+  localStorage.setItem('cal_db_cache',JSON.stringify(DB));
+  const id=k+'_'+f;
+  clearTimeout(pendingWrites[id]);
+  pendingWrites[id]=setTimeout(()=>saveRemote(k,f,DB[k+'_'+f]),700);
   let e=document.getElementById('saved');e.classList.add('show');clearTimeout(window.ft);window.ft=setTimeout(()=>e.classList.remove('show'),900);
 }
 
