@@ -103,7 +103,7 @@
 @media(max-width:700px){body{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.weekday:nth-child(n+3){display:none}.cell{aspect-ratio:auto;min-height:180px}.week-mode .row{grid-template-columns:1fr}.week-mode .weekday{display:none}}
 </style></head><body>
 <div class="setup-overlay" id="setup" style="display:none"><div class="setup-box"><h2>Nastavení synchronizace</h2><p>Vlož URL z Google Apps Script (viz návod)</p><input id="apiUrl" placeholder="https://script.google.com/macros/s/..."><button onclick="saveApi()">Uložit a spustit</button></div></div>
-<header><div class="nav"><button class="btn" onclick="move(-1)">◂</button><h1 id="title"></h1><button class="btn" onclick="move(1)">▸</button></div><div class="actions"><div class="switch"><button id="monthBtn" onclick="setView('month')">Měsíc</button><button id="weekBtn" onclick="setView('week')">Týden</button></div><button class="btn primary" onclick="goToday()">Dnes</button><button class="btn" onclick="showSetup()">Synchronizace</button></div></header>
+<header><div class="nav"><button class="btn" onclick="move(-1)">◂</button><h1 id="title"></h1><button class="btn" onclick="move(1)">▸</button></div><div class="actions"><div class="switch"><button id="monthBtn" onclick="setView('month')">Měsíc</button><button id="weekBtn" onclick="setView('week')">Týden</button></div><button class="btn primary" onclick="goToday()">Dnes</button></div></header>
 <main class="calendar" id="calendar"></main>
 <div class="save" id="saved">✓ Uloženo</div>
 <div class="sync-status" id="syncStatus"></div>
@@ -121,7 +121,7 @@ let DB={};
 let API_URL=localStorage.getItem('cal_api_url')||'';
 let syncTimer=null;
 
-function showSetup(){document.getElementById('apiUrl').value=API_URL;document.getElementById('setup').style.display='grid'}
+function showSetup(){document.getElementById('setup').style.display='grid'}
 function saveApi(){
   let url=document.getElementById('apiUrl').value.trim();
   if(!url)return;
@@ -131,13 +131,31 @@ function saveApi(){
   loadAll();
 }
 
+function loadAllJsonp(){
+  return new Promise((resolve,reject)=>{
+    const cb='calendarCallback_'+Date.now();
+    const script=document.createElement('script');
+    const timer=setTimeout(()=>{cleanup();reject(new Error('timeout'))},10000);
+    function cleanup(){clearTimeout(timer);delete window[cb];script.remove()}
+    window[cb]=data=>{cleanup();resolve(data)};
+    script.onerror=()=>{cleanup();reject(new Error('jsonp'))};
+    script.src=API_URL+'?action=get_all&callback='+cb;
+    document.head.appendChild(script);
+  });
+}
+
 async function loadAll(){
   if(!API_URL)return;
   try{
     document.getElementById('syncStatus').textContent='Načítám...';
-    let r=await fetch(API_URL+'?action=get_all');
-    let data=await r.json();
-    // Never let an empty or partial response erase data already visible locally.
+    let data;
+    try {
+      let r=await fetch(API_URL+'?action=get_all');
+      data=await r.json();
+    } catch (fetchError) {
+      data=await loadAllJsonp();
+    }
+    if(!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('invalid response');
     const remoteKeys=Object.keys(data);
     if(remoteKeys.length) DB=Object.assign({},DB,data);
     localStorage.setItem('cal_db_cache',JSON.stringify(DB));
