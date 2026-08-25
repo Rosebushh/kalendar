@@ -97,7 +97,7 @@
 <div class="pm" id="pm"><div class="pmbox" id="pmbox"></div></div>
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import{getAuth,GoogleAuthProvider,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import{getFirestore,collection,doc,setDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU',authDomain:'viola-kalendar.firebaseapp.com',projectId:'viola-kalendar',storageBucket:'viola-kalendar.firebasestorage.app',messagingSenderId:'313947429240',appId:'1:313947429240:web:5684c85b52607765f3d08d'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
