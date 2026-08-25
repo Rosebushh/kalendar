@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<!-- skill:chrome -->
+<style>
+/* Credit line — bottom-right */
+.design-ui-credit {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  font: 11px/1 system-ui, sans-serif;
+  color: rgba(128,128,128,0.5);
+  pointer-events: none;
+  z-index: 2147483647;
+  transition: opacity 0.4s ease;
+  user-select: none;
+  letter-spacing: 0.02em;
+}
+
+/* Hide chrome on touch devices */
+@media (hover: none) {
+  .design-ui-credit { display: none; }
+}
+
+/* Print fixes */
+@media print {
+  * {
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
+  }
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .design-ui-credit { display: none !important; }
+}
+
+</style>
+<script>
+(function () {
+    // Design-ui pages are single compositions, so the whole body is editable.
+    function markEditable() {
+        document.body.classList.add('artifact-editable');
+    }
+
+    // Credit badge with idle-fade. Hover devices only.
+    function initChromeUI() {
+        if (!matchMedia('(hover: hover)').matches) return;
+
+        var credit = document.createElement('div');
+        credit.className = 'design-ui-credit';
+        credit.setAttribute('aria-hidden', 'true');
+        credit.innerHTML = '\u{1F49C} by ClickUp Brain';
+        document.body.appendChild(credit);
+
+        var timer = null;
+        var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
+        fade(true);
+        var show = function () {
+            fade(false);
+            clearTimeout(timer);
+            timer = setTimeout(function () { fade(true); }, 3000);
+        };
+        document.addEventListener('mousemove', show);
+        show();
+    }
+
+    function init() {
+        markEditable();
+        initChromeUI();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+</script>
+<!-- /skill:chrome -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firebase login test</title>
+  <style>
+    :root{--bg:#f7f2ea;--paper:#fffdf9;--ink:#2b2824;--muted:#746e65;--accent:#75543a;--line:#ded5c9;--ok:#28734e;--bad:#a63c32}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}.box{width:min(460px,100%);padding:32px;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px #0002;text-align:center}.box h1{margin:0 0 8px;font-size:1.5rem}.box p{margin:0 0 22px;color:var(--muted);line-height:1.5}.btn{border:0;border-radius:8px;background:var(--accent);color:var(--paper);padding:12px 20px;font-weight:700;font-size:1rem;cursor:pointer}.btn:disabled{opacity:.6;cursor:wait}.status{margin-top:20px;padding:12px;border-radius:8px;background:#f1ece4;color:var(--muted);font-size:.9rem;line-height:1.45;word-break:break-word}.status.ok{background:#dff0e9;color:var(--ok)}.status.bad{background:#f7dfda;color:var(--bad)}.user{margin-top:16px;color:var(--ok);font-weight:700}.hide{display:none}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <main class="box">
+    <h1>Firebase přihlášení</h1>
+    <p>Toto je čistý test. Neobsahuje kalendář ani Firestore, pouze Google přihlášení.</p>
+    <button class="btn" id="login">Přihlásit přes Google</button>
+    <div class="status" id="status">Čekám na kliknutí.</div>
+    <div class="user hide" id="user"></div>
+  </main>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBhIPfNupYVde-9WGdjak7qvjigGNPyVI",
+      authDomain: "viola-kalendar.firebaseapp.com",
+      projectId: "viola-kalendar",
+      storageBucket: "viola-kalendar.firebasestorage.app",
+      messagingSenderId: "313947429240",
+      appId: "1:313947429240:web:5684c85b52607765f3d08d"
+    };
+
+    const statusBox = document.getElementById('status');
+    const loginButton = document.getElementById('login');
+    const userBox = document.getElementById('user');
+
+    function showStatus(text, kind) {
+      statusBox.textContent = text;
+      statusBox.className = 'status ' + (kind || '');
+    }
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          showStatus('Přihlášení funguje.', 'ok');
+          userBox.textContent = 'Přihlášený účet: ' + (user.email || user.displayName || 'Google účet');
+          userBox.classList.remove('hide');
+          loginButton.textContent = 'Přihlášeno';
+          loginButton.disabled = true;
+        }
+      });
+
+      loginButton.addEventListener('click', async () => {
+        loginButton.disabled = true;
+        showStatus('Otevírám Google přihlášení…');
+        try {
+          await auth.signInWithPopup(provider);
+        } catch (error) {
+          loginButton.disabled = false;
+          showStatus('Chyba: ' + error.code + ' | ' + error.message, 'bad');
+          console.error(error);
+        }
+      });
+    } catch (error) {
+      showStatus('Chyba při načtení Firebase: ' + error.message, 'bad');
+      console.error(error);
+    }
+  </script>
+</body>
+</html>
