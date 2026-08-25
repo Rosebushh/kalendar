@@ -99,7 +99,7 @@
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import{getAuth,GoogleAuthProvider,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import{getFirestore,collection,doc,setDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-const firebaseConfig={apiKey:'AIzaSyBhIPfNupVde-9WGdjak7qvjigGNPgYI',authDomain:'viola-kalendar.firebaseapp.com',projectId:'viola-kalendar',storageBucket:'viola-kalendar.firebasestorage.app',messagingSenderId:'313947429240',appId:'1:313947429240:web:5684c85b52607765f3d08d'};
+const firebaseConfig={apiKey:'AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU',authDomain:'viola-kalendar.firebaseapp.com',projectId:'viola-kalendar',storageBucket:'viola-kalendar.firebasestorage.app',messagingSenderId:'313947429240',appId:'1:313947429240:web:5684c85b52607765f3d08d'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
 const namesDefault=['Martin','Saša','Petr','Dan','Doubravka','Veronika','Míša'];let data={},people=[...namesDefault],view='month',cursor=new Date(),unsub=null;
 const $=id=>document.getElementById(id),key=(d)=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,get=(k,f)=>data[k+'_'+f]||'',put=async(k,f,v)=>{data[k+'_'+f]=v;$('status').textContent='Ukládám…';await setDoc(doc(db,'calendar',k+'_'+f),{key:k,field:f,value:v,updatedAt:Date.now()});$('status').textContent='Synchronizováno'};
