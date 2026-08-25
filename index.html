@@ -1,116 +1,361 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<!-- skill:chrome -->
-<style>
-/* Credit line — bottom-right */
-.design-ui-credit {
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
-  font: 11px/1 system-ui, sans-serif;
-  color: rgba(128,128,128,0.5);
-  pointer-events: none;
-  z-index: 2147483647;
-  transition: opacity 0.4s ease;
-  user-select: none;
-  letter-spacing: 0.02em;
-}
-
-/* Hide chrome on touch devices */
-@media (hover: none) {
-  .design-ui-credit { display: none; }
-}
-
-/* Print fixes */
-@media print {
-  * {
-    transition: none !important;
-    animation: none !important;
-    box-shadow: none !important;
-  }
-  body {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-  .design-ui-credit { display: none !important; }
-}
-
-</style>
-<script>
-(function () {
-    // Design-ui pages are single compositions, so the whole body is editable.
-    function markEditable() {
-        document.body.classList.add('artifact-editable');
-    }
-
-    // Credit badge with idle-fade. Hover devices only.
-    function initChromeUI() {
-        if (!matchMedia('(hover: hover)').matches) return;
-
-        var credit = document.createElement('div');
-        credit.className = 'design-ui-credit';
-        credit.setAttribute('aria-hidden', 'true');
-        credit.innerHTML = '\u{1F49C} by ClickUp Brain';
-        document.body.appendChild(credit);
-
-        var timer = null;
-        var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
-        fade(true);
-        var show = function () {
-            fade(false);
-            clearTimeout(timer);
-            timer = setTimeout(function () { fade(true); }, 3000);
-        };
-        document.addEventListener('mousemove', show);
-        show();
-    }
-
-    function init() {
-        markEditable();
-        initChromeUI();
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-})();
-
-</script>
-<!-- /skill:chrome -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#e8ddd0">
-<link rel="manifest" href="manifest.json">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Viola kalendář</title>
 <style>
-:root{--bg:#f7f2ea;--paper:#fffdf9;--ink:#2b2824;--muted:#746e65;--line:#ded5c9;--job:#f4dfcf;--jobline:#d19f78;--note:#dff0e9;--noteline:#86baa7;--weekend:#eeeef3;--weekendink:#65657a;--accent:#75543a;--red:#f5b5a9;--green:#28734e}*{box-sizing:border-box}body{margin:0;padding:18px 24px;background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}button{font:inherit;cursor:pointer}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}.nav,.actions,.switch{display:flex;align-items:center;gap:8px}.nav h1{min-width:220px;text-align:center;font-size:1.45rem;margin:0}.btn{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-weight:650;color:var(--ink)}.btn.primary,.switch .active{background:var(--accent);color:#fffdf9;border-color:var(--accent)}.switch{padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}.switch button{height:34px;border:0;background:transparent;border-radius:7px;padding:0 14px;color:var(--muted);font-weight:700}.calendar{display:flex;flex-direction:column;gap:8px}.row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 82px 82px;gap:8px}.weekday{text-align:center;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:4px}.weekday:nth-child(n+6){color:var(--weekendink)}.cell{position:relative;min-height:185px;border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:10px;display:flex;flex-direction:column;gap:6px;cursor:pointer}.cell.today{border:2px solid var(--accent)}.empty{background:transparent;border-color:transparent;cursor:default}.head{display:flex;align-items:center;position:relative;min-height:28px}.num{font-weight:800;font-size:1.05rem}.dow{margin-left:auto;color:var(--muted);font-size:.7rem}.drop{position:absolute;left:50%;transform:translateX(-50%);width:26px;height:26px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}.hero{display:flex;flex-direction:column;gap:5px;flex:1}.job,.note{position:relative;flex:1;min-height:70px;border-radius:8px;padding:10px 36px 10px 11px;word-break:break-word;white-space:pre-wrap;overflow:hidden}.job{background:var(--job);border:1px solid var(--jobline);font-size:1rem;font-weight:700}.job.rain{background:var(--weekend);border-color:var(--line);color:var(--weekendink)}.note{background:var(--note);border:1px solid var(--noteline);font-size:.93rem}.note.blink{background:var(--red);animation:blink 1s infinite}@keyframes blink{50%{background:#f8d6ce}}.mini{position:absolute;right:5px;bottom:5px;width:25px;height:25px;border:1px solid var(--line);border-radius:6px;background:var(--paper);display:grid;place-items:center}.map{color:#28734e}.bell{color:#286f5c}.emptyday{background:var(--weekend);color:var(--weekendink);justify-content:center;align-items:center;text-align:center;cursor:default}.holiday{background:#f8e2e9;color:#874357}.emptyday small{font-size:.68rem;margin-top:4px}.modalback{position:fixed;inset:0;background:#0006;display:none;place-items:center;z-index:10}.modalback.open{display:grid}.modal{width:min(580px,94vw);max-height:90vh;overflow:auto;background:var(--paper);border-radius:16px;padding:26px;box-shadow:0 20px 60px #0003}.modal h2{margin:0 0 18px}.field{margin-bottom:14px}.field label{display:block;color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}.field textarea{width:100%;min-height:50px;resize:vertical;border:1px solid var(--jobline);border-radius:8px;background:var(--job);padding:9px;font:1rem system-ui;color:var(--ink)}.people{display:flex;flex-wrap:wrap;gap:8px}.person{border:1px solid var(--line);border-radius:20px;background:var(--paper);padding:6px 13px;font-weight:650}.person.selected{background:#bce5cf;border-color:var(--green);color:#17452e}.peopleline{display:flex;align-items:center;gap:8px;margin-bottom:7px}.editpeople{height:28px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}.close{background:var(--accent);color:#fffdf9;border:0;border-radius:8px;padding:10px 20px;font-weight:700}.status{position:fixed;left:18px;bottom:16px;color:var(--muted);font-size:.75rem}.setup{position:fixed;inset:0;background:var(--bg);z-index:30;display:grid;place-items:center}.setupbox{background:var(--paper);padding:30px;border-radius:16px;width:min(430px,92vw);text-align:center;box-shadow:0 12px 40px #0002}.setupbox input{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;margin:12px 0}.pm{position:fixed;inset:0;background:#0006;display:none;place-items:center;z-index:20}.pm.open{display:grid}.pmbox{background:var(--paper);padding:22px;border-radius:14px;width:min(390px,92vw)}.pmi{display:flex;gap:7px;margin:7px 0}.pmi input{flex:1;padding:7px;border:1px solid var(--line);border-radius:6px}.pmi button{border:0;background:transparent}.addperson{display:flex;gap:7px}.addperson input{flex:1;padding:8px;border:1px solid var(--line);border-radius:6px}@media(max-width:900px){.row{grid-template-columns:repeat(5,minmax(0,1fr))}.row>*:nth-child(n+6){display:none}}@media(max-width:650px){body{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.weekday:nth-child(n+3){display:none}.cell{min-height:180px}.nav h1{font-size:1.15rem;min-width:160px}}
+:root{--bg:#f7f2ea;--paper:#fffdf9;--ink:#2b2824;--muted:#746e65;--line:#ded5c9;--job:#f4dfcf;--jobline:#d19f78;--note:#dff0e9;--noteline:#86baa7;--weekend:#eeeef3;--accent:#75543a;--green:#28734e}
+*{box-sizing:border-box}
+body{margin:0;padding:18px 24px;background:var(--bg);color:var(--ink);font:16px system-ui,sans-serif}
+button{font:inherit;cursor:pointer}
+#loginScreen{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:10}
+.loginBox{width:min(430px,92vw);padding:32px;background:var(--paper);border-radius:16px;text-align:center;box-shadow:0 12px 40px #0002}
+.loginBox h1{margin-top:0}
+.loginBox p{color:var(--muted)}
+.btn{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-weight:650;color:var(--ink)}
+.primary,.active,.close{background:var(--accent);color:#fff;border-color:var(--accent)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.nav,.actions,.switch{display:flex;align-items:center;gap:8px}
+.nav h1{min-width:250px;text-align:center;font-size:1.4rem;margin:0}
+.switch{padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.switch button{height:34px;border:0;border-radius:7px;padding:0 14px;background:transparent;color:var(--muted);font-weight:700}
+.calendar{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.weekday{text-align:center;color:var(--muted);font-size:.75rem;font-weight:700;padding:5px}
+.cell{min-height:185px;border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:10px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.cell.today{border:2px solid var(--accent)}
+.empty{background:transparent;border-color:transparent;cursor:default}
+.head{display:flex;align-items:center;position:relative;min-height:28px}
+.num{font-size:1.05rem;font-weight:800}
+.dow{margin-left:auto;color:var(--muted);font-size:.7rem}
+.drop,.mini{border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.drop{position:absolute;left:50%;transform:translateX(-50%);width:26px;height:26px}
+.hero{display:flex;flex-direction:column;gap:5px;flex:1}
+.job,.note{position:relative;flex:1;min-height:65px;border-radius:8px;padding:10px 36px 10px 11px;word-break:break-word;white-space:pre-wrap;overflow:hidden}
+.job{background:var(--job);border:1px solid var(--jobline);font-weight:700}
+.job.rain{background:var(--weekend);border-color:var(--line)}
+.note{background:var(--note);border:1px solid var(--noteline)}
+.note.blink{background:#f5b5a9;animation:blink 1s infinite}
+@keyframes blink{50%{background:#f8d6ce}}
+.mini{position:absolute;right:5px;bottom:5px;width:25px;height:25px;display:grid;place-items:center}
+.emptyday{background:var(--weekend);color:#65657a;justify-content:center;align-items:center;text-align:center;cursor:default}
+.holiday{background:#f8e2e9;color:#874357}
+.modalback{position:fixed;inset:0;background:#0006;display:none;place-items:center;z-index:20}
+.modalback.open{display:grid}
+.modal{width:min(580px,94vw);max-height:90vh;overflow:auto;background:var(--paper);border-radius:16px;padding:26px;box-shadow:0 20px 60px #0003}
+.field{margin-bottom:14px}
+.field label{display:block;color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase;margin-bottom:5px}
+.field textarea{width:100%;min-height:50px;resize:vertical;border:1px solid var(--jobline);border-radius:8px;background:var(--job);padding:9px;color:var(--ink)}
+.people{display:flex;flex-wrap:wrap;gap:8px}
+.person{border:1px solid var(--line);border-radius:20px;background:var(--paper);padding:6px 13px;font-weight:650}
+.person.selected{background:#bce5cf;border-color:var(--green);color:#17452e}
+.status{position:fixed;left:18px;bottom:16px;color:var(--muted);font-size:.75rem}
+@media(max-width:850px){body{padding:10px}.row{grid-template-columns:repeat(2,minmax(0,1fr))}.weekday:nth-child(n+3){display:none}.cell{min-height:180px}.nav h1{min-width:160px;font-size:1.15rem}}
 </style>
 </head>
 <body>
-<div class="setup" id="setup"><div class="setupbox"><h2>Viola kalendář</h2><p>Přihlas se Google účtem. Potom uvidíš společný kalendář.</p><button class="btn primary" id="login">Přihlásit přes Google</button></div></div>
-<header class="topbar"><div class="nav"><button class="btn" id="prev">◂</button><h1 id="title"></h1><button class="btn" id="next">▸</button></div><div class="actions"><div class="switch"><button id="monthBtn">Měsíc</button><button id="weekBtn">Týden</button></div><button class="btn primary" id="today">Dnes</button><button class="btn" id="logout">Odhlásit</button></div></header>
-<main class="calendar" id="calendar"></main><div class="status" id="status"></div>
-<div class="modalback" id="modalback"><div class="modal" id="modal"></div></div>
-<div class="pm" id="pm"><div class="pmbox" id="pmbox"></div></div>
+
+<div id="loginScreen">
+  <div class="loginBox">
+    <h1>Viola kalendář</h1>
+    <p>Přihlas se Google účtem. Potom uvidíš společný kalendář.</p>
+    <button id="login" class="btn primary">Přihlásit přes Google</button>
+    <p id="loginError"></p>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="nav">
+    <button id="prev" class="btn">◂</button>
+    <h1 id="title"></h1>
+    <button id="next" class="btn">▸</button>
+  </div>
+  <div class="actions">
+    <button id="today" class="btn">Dnes</button>
+    <div class="switch">
+      <button id="monthBtn" class="active">Měsíc</button>
+      <button id="weekBtn">Týden</button>
+    </div>
+    <button id="logout" class="btn">Odhlásit</button>
+  </div>
+</header>
+
+<main id="calendar" class="calendar"></main>
+<div id="status" class="status">Připojuji…</div>
+
+<div id="modalback" class="modalback">
+  <div id="modal" class="modal"></div>
+</div>
+
 <script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import{getFirestore,collection,doc,setDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-const firebaseConfig={apiKey:'AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU',authDomain:'viola-kalendar.firebaseapp.com',projectId:'viola-kalendar',storageBucket:'viola-kalendar.firebasestorage.app',messagingSenderId:'313947429240',appId:'1:313947429240:web:5684c85b52607765f3d08d'};
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
-const namesDefault=['Martin','Saša','Petr','Dan','Doubravka','Veronika','Míša'];let data={},people=[...namesDefault],view='month',cursor=new Date(),unsub=null;
-const $=id=>document.getElementById(id),key=(d)=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,get=(k,f)=>data[k+'_'+f]||'',put=async(k,f,v)=>{data[k+'_'+f]=v;$('status').textContent='Ukládám…';await setDoc(doc(db,'calendar',k+'_'+f),{key:k,field:f,value:v,updatedAt:Date.now()});$('status').textContent='Synchronizováno'};
-$('login').onclick=()=>signInWithPopup(auth,provider).catch(e=>{console.error(e);alert('Firebase: '+e.code)});
-function esc(v){return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}function maps(v){return'https://www.google.com/maps/search/'+encodeURIComponent(v)}function isToday(d){let n=new Date;return key(n)===key(d)}function monday(d){let x=new Date(d),n=x.getDay();x.setDate(x.getDate()-(n===0?6:n-1));return x}
-function makeDay(d,wd){let k=key(d),holiday=({ '2026-01-01':'Nový rok','2026-04-03':'Velký pátek','2026-04-06':'Velikonoční pondělí','2026-05-01':'Svátek práce','2026-05-08':'Den vítězství','2026-07-05':'Cyril a Metoděj','2026-07-06':'Jan Hus','2026-09-28':'Den české státnosti','2026-10-28':'Vznik ČSR','2026-11-17':'Den svobody','2026-12-24':'Štědrý den','2026-12-25':'1. svátek vánoční','2026-12-26':'2. svátek vánoční'})[k];if(wd>4||holiday){let e=document.createElement('div');e.className='cell emptyday '+(holiday?'holiday':'');e.innerHTML=`<strong>${d.getDate()}. ${['Po','Út','St','Čt','Pá','So','Ne'][wd]}</strong><small>${holiday?'Volno, '+holiday:'Volno'}</small>`;return e}let a=get(k,'address'),rain=get(k,'off')==='1',blink=get(k,'blink')==='1',note=get(k,'notes');let e=document.createElement('div');e.className='cell'+(isToday(d)?' today':'');e.innerHTML=`<div class="head"><span class="num">${d.getDate()}</span><button class="drop" data-drop="${k}">💧</button><span class="dow">${['Po','Út','St','Čt','Pá','So','Ne'][wd]}</span></div><div class="hero"><div class="job ${rain?'rain':''}">${esc(rain?'Volno/Déšť':a||'Zakázka')}${a&&!rain?`<a class="mini map" href="${maps(a)}" target="_blank" onclick="event.stopPropagation()">⌖</a>`:''}</div><div class="note ${blink?'blink':''}">${esc(note)||'<span style="color:var(--muted)">Poznámka</span>'}<button class="mini bell" data-bell="${k}">🔔</button></div></div>`;e.onclick=()=>openDay(k,d,wd);return e}
-function render(){document.body.classList.toggle('week',view==='week');$('monthBtn').classList.toggle('active',view==='month');$('weekBtn').classList.toggle('active',view==='week');let root=$('calendar');root.innerHTML='';let days=[];if(view==='week'){let s=monday(cursor);for(let i=0;i<7;i++){let d=new Date(s);d.setDate(s.getDate()+i);days.push(d)}$('title').textContent=`${key(days[0])} až ${key(days[6])}`}else{$('title').textContent=cursor.toLocaleDateString('cs-CZ',{month:'long',year:'numeric'});let s=new Date(cursor.getFullYear(),cursor.getMonth(),1),off=(s.getDay()+6)%7,total=new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate();for(let i=0;i<off;i++)days.push(null);for(let i=1;i<=total;i++)days.push(new Date(cursor.getFullYear(),cursor.getMonth(),i));while(days.length%7)days.push(null)}let h=document.createElement('div');h.className='row';['Po','Út','St','Čt','Pá','So','Ne'].forEach(n=>h.innerHTML+=`<div class="weekday">${n}</div>`);root.appendChild(h);for(let i=0;i<days.length;i+=7){let r=document.createElement('div');r.className='row';days.slice(i,i+7).forEach((d,j)=>r.appendChild(d?makeDay(d,j):Object.assign(document.createElement('div'),{className:'cell empty'})));root.appendChild(r)}bind()}
-function bind(){document.querySelectorAll('[data-drop]').forEach(b=>b.onclick=e=>{e.stopPropagation();let k=b.dataset.drop;put(k,'off',get(k,'off')==='1'?'0':'1');render()});document.querySelectorAll('[data-bell]').forEach(b=>b.onclick=e=>{e.stopPropagation();let k=b.dataset.bell;put(k,'blink',get(k,'blink')==='1'?'0':'1');render()})}
-function openDay(k,d,wd){let selected=JSON.parse(get(k,'people')||'[]');let html=`<h2>${d.toLocaleDateString('cs-CZ',{dateStyle:'full'})}</h2>`;[['address','Adresa'],['work','Práce'],['material','Materiál'],['price','Cena'],['notes','Poznámka']].forEach(([f,l])=>html+=`<div class="field"><label>${l}</label><textarea data-f="${f}" spellcheck="false">${esc(get(k,f))}</textarea></div>`);html+=`<div class="field"><div class="peopleline"><label>Lidé</label><button class="editpeople" id="editpeople">✏️</button></div><div class="people" id="people">${people.map(n=>`<button class="person ${selected.includes(n)?'selected':''}" data-person="${esc(n)}">${esc(n)}</button>`).join('')}</div></div><button class="close" id="close">Zavřít</button>`;$('modal').innerHTML=html;$('modalback').classList.add('open');$('modal').querySelectorAll('textarea').forEach(t=>t.oninput=()=>put(k,t.dataset.f,t.value));$('modal').querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>{let l=JSON.parse(get(k,'people')||'[]'),i=l.indexOf(b.dataset.person);i>=0?l.splice(i,1):l.push(b.dataset.person);put(k,'people',JSON.stringify(l));b.classList.toggle('selected')});$('close').onclick=closeModal;$('editpeople').onclick=openPeopleEditor;window.mk=k;window.md=[d.getFullYear(),d.getMonth(),d.getDate(),wd]}
-function closeModal(){$('modalback').classList.remove('open');render()}
-function openPeopleEditor(){let html='<h3>Upravit seznam lidí</h3><div>';people.forEach((n,i)=>html+=`<div class="pmi"><input value="${esc(n)}" data-i="${i}"><button data-del="${i}">✕</button></div>`);html+=`</div><div class="addperson"><input id="newname" placeholder="Nové jméno"><button id="addname">Přidat</button></div><button class="close" id="pmclose">Hotovo</button>`;$('pmbox').innerHTML=html;$('pm').classList.add('open');$('pmbox').querySelectorAll('[data-i]').forEach(i=>i.onchange=()=>{people[i.dataset.i]=i.value.trim()||people[i.dataset.i];setPeople()});$('pmbox').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{people.splice(+b.dataset.del,1);setPeople();openPeopleEditor()});$('addname').onclick=()=>{let v=$('newname').value.trim();if(v&&!people.includes(v)){people.push(v);setPeople()}openPeopleEditor()};$('pmclose').onclick=closePeopleEditor}
-function setPeople(){put('_settings','people',JSON.stringify(people))}function closePeopleEditor(){$('pm').classList.remove('open');openDay(window.mk,new Date(...window.md.slice(0,3)),window.md[3])}
-onAuthStateChanged(auth,user=>{if(!user){$('setup').style.display='grid';return}$('setup').style.display='none';if(unsub)unsub();unsub=onSnapshot(collection(db,'calendar'),snap=>{data={};snap.forEach(x=>{let v=x.data();data[v.key+'_'+v.field]=v.value});$('status').textContent='Synchronizováno';render()})});
-</script></body></html>
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{
+ getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut
+}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{
+ getFirestore,collection,doc,setDoc,onSnapshot
+}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* VLOŽ SEM NOVÝ FUNKČNÍ API KLÍČ Z GOOGLE CLOUD */
+const firebaseConfig={
+ apiKey:"AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU",
+ authDomain:"viola-kalendar.firebaseapp.com",
+ projectId:"viola-kalendar",
+ storageBucket:"viola-kalendar.firebasestorage.app",
+ messagingSenderId:"313947429240",
+ appId:"1:313947429240:web:5684c85b52607765f3d08d"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const provider=new GoogleAuthProvider();
+
+const $=id=>document.getElementById(id);
+const names=["Martin","Saša","Petr","Dan","Doubravka","Veronika","Míša"];
+const days=["Po","Út","St","Čt","Pá","So","Ne"];
+const months=["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec"];
+const holidays={
+"2026-01-01":"Nový rok","2026-04-03":"Velký pátek",
+"2026-04-06":"Velikonoční pondělí","2026-05-01":"Svátek práce",
+"2026-05-08":"Den vítězství","2026-07-05":"Cyril a Metoděj",
+"2026-07-06":"Jan Hus","2026-09-28":"Den české státnosti",
+"2026-10-28":"Vznik ČSR","2026-11-17":"Den svobody",
+"2026-12-24":"Štědrý den","2026-12-25":"1. svátek vánoční",
+"2026-12-26":"2. svátek vánoční"
+};
+
+let data={};
+let view="month";
+let cursor=new Date();
+let unsubscribe=null;
+
+const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const get=(k,f)=>data[k+"_"+f]||"";
+const esc=v=>String(v||"").replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">");
+
+async function put(k,f,value){
+ data[k+"_"+f]=value;
+ $("status").textContent="Ukládám…";
+ await setDoc(doc(db,"calendar",k+"_"+f),{
+   key:k,field:f,value,updatedAt:Date.now()
+ });
+ $("status").textContent="Synchronizováno";
+}
+
+function monday(d){
+ const x=new Date(d);
+ const n=x.getDay();
+ x.setDate(x.getDate()-(n===0?6:n-1));
+ x.setHours(0,0,0,0);
+ return x;
+}
+
+function sameDay(a,b){
+ return key(a)===key(b);
+}
+
+function makeDay(d,weekday){
+ const k=key(d);
+ const holiday=holidays[k];
+ if(weekday>4||holiday){
+   const e=document.createElement("div");
+   e.className="cell emptyday"+(holiday?" holiday":"");
+   e.innerHTML=`<strong>${d.getDate()}. ${days[weekday]}</strong><small>${holiday?"Volno, "+holiday:"Volno"}</small>`;
+   return e;
+ }
+
+ const address=get(k,"address");
+ const rain=get(k,"off")==="1";
+ const blink=get(k,"blink")==="1";
+ const note=get(k,"notes");
+
+ const e=document.createElement("div");
+ e.className="cell"+(sameDay(d,new Date)?" today":"");
+ e.innerHTML=`
+   <div class="head">
+     <span class="num">${d.getDate()}</span>
+     <span class="dow">${days[weekday]}</span>
+     <button class="drop" data-drop="${k}">💧</button>
+   </div>
+   <div class="hero">
+     <div class="job ${rain?"rain":""}">
+       ${esc(rain?"Volno/Déšť":address||"Zakázka")}
+       ${address&&!rain?`<a class="mini map" target="_blank" href="https://www.google.com/maps/search/${encodeURIComponent(address)}">⌖</a>`:""}
+     </div>
+     <div class="note ${blink?"blink":""}">
+       ${esc(note)||"Poznámka"}
+       <button class="mini bell" data-bell="${k}">🔔</button>
+     </div>
+   </div>`;
+ e.addEventListener("click",event=>{
+   if(event.target.closest("button,a"))return;
+   openDay(k,d,weekday);
+ });
+ return e;
+}
+
+function render(){
+ const root=$("calendar");
+ root.innerHTML="";
+ $("monthBtn").classList.toggle("active",view==="month");
+ $("weekBtn").classList.toggle("active",view==="week");
+
+ let list=[];
+ if(view==="week"){
+   const start=monday(cursor);
+   for(let i=0;i<7;i++){
+     const d=new Date(start);
+     d.setDate(start.getDate()+i);
+     list.push(d);
+   }
+   $("title").textContent=`${list[0].getDate()}. ${list[0].getMonth()+1}. až ${list[6].getDate()}. ${list[6].getMonth()+1}.`;
+ }else{
+   $("title").textContent=`${months[cursor.getMonth()]} ${cursor.getFullYear()}`;
+   const first=new Date(cursor.getFullYear(),cursor.getMonth(),1);
+   const offset=(first.getDay()+6)%7;
+   for(let i=0;i<offset;i++)list.push(null);
+   const total=new Date(cursor.getFullYear(),cursor.getMonth()+1,0).getDate();
+   for(let i=1;i<=total;i++)list.push(new Date(cursor.getFullYear(),cursor.getMonth(),i));
+   while(list.length%7)list.push(null);
+ }
+
+ const header=document.createElement("div");
+ header.className="row";
+ days.forEach(d=>header.innerHTML+=`<div class="weekday">${d}</div>`);
+ root.appendChild(header);
+
+ for(let i=0;i<list.length;i+=7){
+   const row=document.createElement("div");
+   row.className="row";
+   list.slice(i,i+7).forEach((d,j)=>{
+     row.appendChild(d?makeDay(d,j):Object.assign(document.createElement("div"),{className:"cell empty"}));
+   });
+   root.appendChild(row);
+ }
+
+ bindButtons();
+}
+
+function bindButtons(){
+ document.querySelectorAll("[data-drop]").forEach(button=>{
+   button.onclick=event=>{
+     event.stopPropagation();
+     const k=button.dataset.drop;
+     put(k,"off",get(k,"off")==="1"?"0":"1");
+     render();
+   };
+ });
+ document.querySelectorAll("[data-bell]").forEach(button=>{
+   button.onclick=event=>{
+     event.stopPropagation();
+     const k=button.dataset.bell;
+     put(k,"blink",get(k,"blink")==="1"?"0":"1");
+     render();
+   };
+ });
+}
+
+function openDay(k,d,weekday){
+ const selected=JSON.parse(get(k,"people")||"[]");
+ const modal=$("modal");
+
+ modal.innerHTML=`
+   <h2>${d.toLocaleDateString("cs-CZ",{dateStyle:"full"})}</h2>
+   ${field("address","Adresa",get(k,"address"))}
+   ${field("work","Práce",get(k,"work"))}
+   ${field("material","Materiál",get(k,"material"))}
+   ${field("price","Cena",get(k,"price"))}
+   ${field("notes","Poznámka",get(k,"notes"))}
+   <div class="field">
+     <label>Lidé</label>
+     <div class="people">
+       ${names.map(name=>`
+         <button class="person ${selected.includes(name)?"selected":""}" data-person="${esc(name)}">${esc(name)}</button>
+       `).join("")}
+     </div>
+   </div>
+   <button id="closeModal" class="btn close">Zavřít</button>
+ `;
+
+ $("modalback").classList.add("open");
+
+ modal.querySelectorAll("textarea").forEach(area=>{
+   area.oninput=()=>put(k,area.dataset.field,area.value);
+ });
+
+ modal.querySelectorAll("[data-person]").forEach(button=>{
+   button.onclick=()=>{
+     const list=JSON.parse(get(k,"people")||"[]");
+     const i=list.indexOf(button.dataset.person);
+     if(i>=0)list.splice(i,1);else list.push(button.dataset.person);
+     button.classList.toggle("selected");
+     put(k,"people",JSON.stringify(list));
+   };
+ });
+
+ $("closeModal").onclick=()=>{$("modalback").classList.remove("open");render()};
+}
+
+function field(name,label,value){
+ return `<div class="field">
+   <label>${label}</label>
+   <textarea data-field="${name}" spellcheck="false">${esc(value)}</textarea>
+ </div>`;
+}
+
+$("login").onclick=async()=>{
+ $("login").disabled=true;
+ $("loginError").textContent="Otevírám Google přihlášení…";
+ try{
+   await signInWithPopup(auth,provider);
+ }catch(error){
+   console.error(error);
+   $("loginError").textContent="Chyba: "+error.code;
+   $("login").disabled=false;
+ }
+};
+
+$("logout").onclick=()=>signOut(auth);
+$("monthBtn").onclick=()=>{view="month";render()};
+$("weekBtn").onclick=()=>{view="week";render()};
+$("prev").onclick=()=>{
+ if(view==="month")cursor.setMonth(cursor.getMonth()-1);
+ else cursor.setDate(cursor.getDate()-7);
+ render();
+};
+$("next").onclick=()=>{
+ if(view==="month")cursor.setMonth(cursor.getMonth()+1);
+ else cursor.setDate(cursor.getDate()+7);
+ render();
+};
+$("today").onclick=()=>{cursor=new Date();render()};
+
+onAuthStateChanged(auth,user=>{
+ if(!user){
+   $("loginScreen").style.display="grid";
+   return;
+ }
+
+ $("loginScreen").style.display="none";
+ $("status").textContent="Načítám synchronizaci…";
+
+ if(unsubscribe)unsubscribe();
+
+ unsubscribe=onSnapshot(collection(db,"calendar"),snapshot=>{
+   data={};
+   snapshot.forEach(item=>{
+     const v=item.data();
+     data[v.key+"_"+v.field]=v.value;
+   });
+   $("status").textContent="Synchronizováno";
+   render();
+ },error=>{
+   console.error(error);
+   $("status").textContent="Chyba synchronizace";
+ });
+});
+</script>
+</body>
+</html>
