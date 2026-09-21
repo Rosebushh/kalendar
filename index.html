@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v6</title>
+  <title>Viola kalendář v7</title>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -18,6 +18,10 @@
       --rule: #1a1815;
       --rule-soft: #d9cfc0;
       
+      /* Jednotné sytější béžové podbarvení polí dnů */
+      --cell-bg: #ece4d4;
+      
+      /* Barvy ze Šichtovnice */
       --weekend: #818cf8;
       --weekendink: #000000;
       --holiday: #fb7185;
@@ -245,7 +249,7 @@
     .sync.error .dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
     /* ========================================================= */
-    /* MŘÍŽKA KALENDÁŘE: VÝRAZNĚ VĚTŠÍ OKNA A VELKÉ PÍSMO        */
+    /* MŘÍŽKA KALENDÁŘE: VELKÁ OKNA, VÍKEND 82px, JEDNOTNÁ BÉŽOVÁ*/
     /* ========================================================= */
     .calendar, .week {
       display: flex;
@@ -280,13 +284,13 @@
       border-color: #4f46e5;
     }
 
-    /* VÝRAZNĚ VĚTŠÍ OKNA (MIN-HEIGHT 230px) */
+    /* JEDNOTNÁ TEPLEJŠÍ BÉŽOVÁ BARVA PRO VŠECHNA BĚŽNÁ POLA DNU */
     .cell {
       min-width: 0;
       min-height: 230px;
       border: 2px solid var(--rule);
       border-radius: 12px;
-      background: #ffffff;
+      background-color: var(--cell-bg);
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
@@ -301,14 +305,10 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.14);
     }
 
-    .cell.col-alt {
-      background: #fbf7ee;
-    }
-
     /* DNEŠNÍ DEN: ZÁŘÍCÍ ŽLUTÁ #CCFF00 PŘES CELÉ OKNO */
     .cell.today {
       border: 3.5px solid #000000 !important;
-      background: #ccff00 !important;
+      background-color: #ccff00 !important;
       box-shadow: 0 0 20px rgba(204, 255, 0, 0.7), inset 0 0 14px rgba(0,0,0,0.12) !important;
     }
 
@@ -332,14 +332,14 @@
     }
 
     .empty {
-      background: #f5eedf !important;
+      background: #e2d7c5 !important;
       opacity: 0.35;
       border-color: transparent !important;
       cursor: default;
       box-shadow: none !important;
     }
 
-    /* VÍKENDOVÁ POLE: CTÍ 82px ŠÍŘKU */
+    /* VÍKENDOVÁ A SVÁTEČNÍ POLE: 82px ŠÍŘKA, KLIKNUTÍM PŘEPNUTELNÁ */
     .emptyday {
       min-width: 0;
       min-height: 230px;
@@ -352,8 +352,14 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      cursor: default;
+      cursor: pointer;
       padding: 6px;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .emptyday:hover {
+      filter: brightness(1.05);
+      transform: scale(1.02);
     }
 
     .emptyday strong {
@@ -364,7 +370,7 @@
     }
 
     .emptyday small {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       color: #000000;
       text-transform: uppercase;
@@ -377,7 +383,19 @@
       border-color: #e11d48 !important;
     }
 
-    /* HLAVIČKA DNE: ČÍSLO A KAPKA */
+    .badge-work-switch {
+      font-size: 10px;
+      font-weight: 900;
+      background: #000000;
+      color: #ffffff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 6px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* HLAVIČKA DNE: ČÍSLO, POPISKA DNE A KAPKA */
     .head {
       display: flex;
       align-items: center;
@@ -420,7 +438,7 @@
       border-color: #3b82f6;
     }
 
-    /* DVA VELKÉ SAMOSTATNÉ BLOKY: PRÁCE A POZNÁMKA (VELKÉ PÍSMO 18-22px) */
+    /* DVA VELKÉ BLOKY: ADRESA & PRÁCE (NAHOŘE) A POZNÁMKA (DOLE) */
     .hero {
       display: flex;
       flex-direction: column;
@@ -471,16 +489,12 @@
       font-weight: 800;
     }
 
-    .note.blink {
-      background: #fecdd3 !important;
-      border-color: #f43f5e !important;
-      color: #9f1239 !important;
-      animation: blink 1s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { background: #fecdd3; }
-      50% { background: #ffe4e6; }
+    /* PO ZVONEČKU: ŽÁDNÉ BLIKÁNÍ, POUZE ČISTÉ ČERVENÉ ZVÝRAZNĚNÍ */
+    .note.alert-red {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #991b1b !important;
+      animation: none !important;
     }
 
     .mini {
@@ -559,7 +573,7 @@
       height: 520px;
       border: 2px solid var(--rule);
       border-radius: 12px;
-      background: #ffffff;
+      background-color: var(--cell-bg);
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -570,7 +584,7 @@
 
     .day.today {
       border: 4px solid #000000 !important;
-      background: var(--todaybg) !important;
+      background-color: var(--todaybg) !important;
       box-shadow: 0 0 24px rgba(204, 255, 0, 0.7) !important;
     }
 
@@ -644,6 +658,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .weekend-half {
@@ -656,6 +671,10 @@
       font-size: 28px;
       font-weight: 900;
       padding: 12px;
+      transition: filter 0.15s ease;
+    }
+    .weekend-half:hover {
+      filter: brightness(1.05);
     }
 
     .weekend-half + .weekend-half {
@@ -1221,22 +1240,32 @@
       }
     }
 
+    // Ikona mapy se váže VÝHRADNĚ k adrese
     function pin(a) {
-      return a ? `<a class="mini map" target="_blank" href="https://www.google.com/maps/search/${encodeURIComponent(a)}" aria-label="Mapa" title="Otevřít v Google Mapách"><svg class="pin" viewBox="0 0 24 30"><path d="M12 29S3 18.6 3 11.2C3 5.5 7 1 12 1s9 4.5 9 10.2C21 18.6 12 29 12 29Z"/><circle cx="12" cy="11" r="3.5"/></svg></a>` : "";
+      return a ? `<a class="mini map" target="_blank" href="https://www.google.com/maps/search/${encodeURIComponent(a)}" aria-label="Mapa" title="Otevřít adresu v Google Mapách"><svg class="pin" viewBox="0 0 24 30"><path d="M12 29S3 18.6 3 11.2C3 5.5 7 1 12 1s9 4.5 9 10.2C21 18.6 12 29 12 29Z"/><circle cx="12" cy="11" r="3.5"/></svg></a>` : "";
     }
 
     function makeDay(d, wd, weekly=false) {
       let k = key(d), hol = holidayMap(d.getFullYear())[k];
-      
-      // Víkendy a svátky ctí užší velikost 82px v měsíčním zobrazení
-      if (wd > 4 || hol) {
+      let isWeekendOrHoliday = (wd > 4 || !!hol);
+      let isWorkOverride = get(k, "workday_override") === "1";
+
+      // Víkendy a svátky: pokud NENÍ přepnuto na pracovní mód, zobrazí se užší prázdné pole
+      if (isWeekendOrHoliday && !isWorkOverride) {
         let e = document.createElement("div");
         e.className = (weekly ? "day" : "cell") + " emptyday" + (hol ? " holiday-cell" : "");
-        e.innerHTML = `<strong>${d.getDate()}. ${D[wd]}</strong><small>${hol ? hol : "VÍKEND"}</small>`;
+        e.innerHTML = `<strong>${d.getDate()}. ${D[wd]}</strong>
+          <small>${hol ? hol : "VÍKEND"}</small>
+          <span class="badge-work-switch">Kliknutím zadat práci</span>`;
+        
+        e.onclick = () => {
+          put(k, "workday_override", "1");
+          openDay(k, d);
+        };
         return e;
       }
 
-      // DATA DNE: adresa, práce, poznámky, déšť, blikání a lidé
+      // DATA DNE: adresa, práce, poznámky, déšť, alert-red a lidé
       let a = get(k, "address"), w = get(k, "work"), n = get(k, "notes"), rain = get(k, "off") === "1", blink = get(k, "blink") === "1";
       
       let dayPeople = [];
@@ -1244,27 +1273,27 @@
 
       let e = document.createElement("div");
       e.className = weekly ? "day" : "cell";
-      if (!weekly && (wd % 2 === 1)) e.classList.add("col-alt");
       if (same(d, new Date())) e.classList.add("today");
 
       let head = weekly 
         ? `<div class="day-head"><span class="day-number">${d.getDate()}</span><span class="day-name">${D[wd]}</span><button class="drop" title="Déšť/volno">💧</button></div>`
         : `<div class="head"><span class="num">${d.getDate()}.</span><span class="dow">${D[wd]}</span><button class="drop" title="Déšť/volno">💧</button></div>`;
 
-      // Text práce: pokud je vyplněna práce, zobraz ji; pokud adresa, zobraz ji; pokud obojí, práce + adresa
+      // 1. ZOBRAZENÍ: NEJPRVE ADRESA (S MAPOU), AŽ PAK PRÁCE
       let displayJob = "";
       if (rain) {
         displayJob = "Volno / Déšť";
-      } else if (w && a) {
-        displayJob = w + " · " + a;
+      } else if (a && w) {
+        displayJob = a + "\n" + w; // Nejprve adresa, pak práce
       } else {
-        displayJob = w || a || "";
+        displayJob = a || w || "";
       }
 
       // Vykreslení obou plnohodnotných velkých polí: Práce nahoře, Poznámka dole
+      // Poznámka se zvonečkem: nebliká, pouze se přepne do sytě červené (.alert-red)
       let heroHtml = `<div class="hero">
         <div class="job ${rain ? "rain" : ""}">${esc(displayJob)}${rain ? "" : pin(a)}</div>
-        <div class="note ${blink ? "blink" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Důležitá poznámka">🔔</button></div>
+        <div class="note ${blink ? "alert-red" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Zvýraznit červeně">🔔</button></div>
       </div>`;
 
       // ŠTÍTKY VŠECH LIDÍ: VŠICHNI LIDÉ VYPSANÍ BEZ SKRÝVÁNÍ
@@ -1305,14 +1334,34 @@
       currentKey = k;
       currentDate = new Date(d);
       let sel = JSON.parse(get(k, "people") || "[]");
+      let blink = get(k, "blink") === "1";
+      let hol = holidayMap(d.getFullYear())[k];
+      let isWeekendOrHoliday = (d.getDay() === 0 || d.getDay() === 6 || !!hol);
+      let isWorkOverride = get(k, "workday_override") === "1";
 
       $("modal").innerHTML = `<h2>${d.toLocaleDateString("cs-CZ", { dateStyle: "full" })}</h2>
         <div class="fields">
-          ${field("address", "Adresa", get(k, "address"))}
-          ${field("work", "Práce", get(k, "work"))}
+          ${isWeekendOrHoliday ? `
+            <div style="background:#e0e7ff; border:1.5px solid #6366f1; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:900; color:#312e81; font-size:15px;">VÍKEND / SVÁTEK (${hol || "Víkend"})</span>
+              <button id="toggleWorkday" class="btn" style="height:32px; font-size:12px; background:#4338ca; color:#ffffff; border-color:#3730a3;">
+                ${isWorkOverride ? "Zrušit pracovní den (vrátit volno)" : "Přepnout na pracovní den"}
+              </button>
+            </div>
+          ` : ""}
+          ${field("address", "Adresa (nejprve v okně)", get(k, "address"))}
+          ${field("work", "Práce / Zakázka (až po adrese)", get(k, "work"))}
           ${field("material", "Materiál", get(k, "material"))}
           ${field("price", "Cena", get(k, "price"), true)}
-          ${field("notes", "Poznámka", get(k, "notes"))}
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label style="margin:0; font-size:15px; font-weight:900; text-transform:uppercase; color:var(--muted);">Poznámka</label>
+              <button id="toggleBlink" class="btn" style="height:32px; font-size:12px; padding:0 10px; border-color:${blink ? "#ef4444" : "var(--gold-dark)"}; background:${blink ? "#fee2e2" : "#111814"}; color:${blink ? "#991b1b" : "#fef08a"};">
+                🔔 ${blink ? "Červené zvýraznění: ZAPNUTO" : "Červené zvýraznění: VYPNUTO"}
+              </button>
+            </div>
+            <textarea data-f="notes" spellcheck="false">${esc(get(k, "notes"))}</textarea>
+          </div>
           <div>
             <div class="people-head"><label>Lidé na směně</label><button id="editPeople" class="edit" title="Upravit seznam lidí">✎</button></div>
             <div class="people">${people.map(n => `<button class="person ${sel.includes(n) ? "selected" : ""}" data-p="${esc(n)}">${esc(n)}</button>`).join("")}</div>
@@ -1322,7 +1371,7 @@
       
       $("modalback").classList.add("open");
       
-      // Ukládání všech polí v modálu včetně poznámek okamžitě
+      // Okamžité ukládání všech polí do Firestore při psaní
       $("modal").querySelectorAll("[data-f]").forEach(x => {
         x.oninput = () => put(k, x.dataset.f, x.value);
       });
@@ -1334,6 +1383,19 @@
         put(k, "people", JSON.stringify(l));
       });
       
+      $("toggleBlink").onclick = () => {
+        let nextBlink = blink ? "0" : "1";
+        put(k, "blink", nextBlink);
+        openDay(k, d);
+      };
+
+      if (isWeekendOrHoliday && $("toggleWorkday")) {
+        $("toggleWorkday").onclick = () => {
+          put(k, "workday_override", isWorkOverride ? "0" : "1");
+          openDay(k, d);
+        };
+      }
+
       $("closeDay").onclick = () => {
         $("modalback").classList.remove("open");
         render(); // Okamžité překreslení kalendáře po zavření modálu
@@ -1350,9 +1412,29 @@
       $("peoplemodal").innerHTML = html;
       $("peopleback").classList.add("open");
       
+      // PŘEJMENOVÁNÍ ČLOVĚKA: OKAMŽITĚ AKTUALIZUJE PŘIŘAZENÍ VE VŠECH DNECH
       $("peoplemodal").querySelectorAll("[data-person-index]").forEach(x => x.onchange = async () => {
-        let i = +x.dataset.personIndex, n = x.value.trim();
-        if (n) { people[i] = n; await put("_settings", "people", JSON.stringify(people)); }
+        let i = +x.dataset.personIndex, newName = x.value.trim();
+        let oldName = people[i];
+        if (newName && oldName && newName !== oldName) {
+          people[i] = newName;
+          await put("_settings", "people", JSON.stringify(people));
+
+          // Projít všechny uložené dny a přejmenovat staré jméno na nové
+          Object.keys(data).forEach(async k => {
+            if (k.endsWith("_people")) {
+              try {
+                let pList = JSON.parse(data[k] || "[]");
+                let idx = pList.indexOf(oldName);
+                if (idx >= 0) {
+                  pList[idx] = newName;
+                  let rawKey = k.replace("_people", "");
+                  await put(rawKey, "people", JSON.stringify(pList));
+                }
+              } catch(e) {}
+            }
+          });
+        }
       });
       
       $("peoplemodal").querySelectorAll("[data-delete]").forEach(x => x.onclick = async () => {
@@ -1504,9 +1586,9 @@
 
     render();
 
-    // Cache-busting registrace verze v6
+    // Cache-busting registrace verze v7
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=6', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=7', { updateViaCache: 'none' })
         .then(reg => {
           reg.update();
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
