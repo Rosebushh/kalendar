@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v13</title>
+  <title>Viola kalendář v14</title>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -1333,7 +1333,7 @@
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
-    await setPersistence(auth, browserLocalPersistence).catch(console.error);
+    setPersistence(auth, browserLocalPersistence).catch(e => console.warn('Persistence error:', e));
 
     const $ = id => document.getElementById(id);
     const D = ["Po","Út","St","Čt","Pá","So","Ne"];
@@ -1787,19 +1787,33 @@
       });
     }
 
+    // Okamžité výchozí vykreslení mřížky
+    render();
+
+    let authResolved = false;
     onAuthStateChanged(auth, u => {
+      authResolved = true;
       handleAuth(u);
     });
 
     if (auth.currentUser) {
+      authResolved = true;
       handleAuth(auth.currentUser);
     }
 
-    render();
+    // Bezpečnostní pojistka: pokud prohlížeč (např. na PC s aktivním blokátorem či pomalým spojením)
+    // nevrátí stav do 2.5s a není přihlášen, zobrazit přihlašovací dialog
+    setTimeout(() => {
+      if (!authResolved && !auth.currentUser) {
+        console.warn("Auth timeout reached, prompting login");
+        $("setup").style.display = "grid";
+        state("Čeká na přihlášení", "error");
+      }
+    }, 2500);
 
     // Cache-busting registrace verze v8
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=13', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=14', { updateViaCache: 'none' })
         .then(reg => {
           reg.update();
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
