@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v7</title>
+  <title>Viola kalendář v8</title>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -18,7 +18,7 @@
       --rule: #1a1815;
       --rule-soft: #d9cfc0;
       
-      /* Jednotné sytější béžové podbarvení polí dnů */
+      /* Jednotné sytější teplé béžové podbarvení polí dnů */
       --cell-bg: #ece4d4;
       
       /* Barvy ze Šichtovnice */
@@ -249,7 +249,7 @@
     .sync.error .dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
     /* ========================================================= */
-    /* MŘÍŽKA KALENDÁŘE: VELKÁ OKNA, VÍKEND 82px, JEDNOTNÁ BÉŽOVÁ*/
+    /* MŘÍŽKA KALENDÁŘE: VELKÁ OKNA, VÍKEND 82px / ROZŠIŘITELNÝ  */
     /* ========================================================= */
     .calendar, .week {
       display: flex;
@@ -284,7 +284,7 @@
       border-color: #4f46e5;
     }
 
-    /* JEDNOTNÁ TEPLEJŠÍ BÉŽOVÁ BARVA PRO VŠECHNA BĚŽNÁ POLA DNU */
+    /* VELKÁ BUŇKA PRACOVNÍHO DNE (MIN-HEIGHT 230px) */
     .cell {
       min-width: 0;
       min-height: 230px;
@@ -358,7 +358,7 @@
     }
 
     .emptyday:hover {
-      filter: brightness(1.05);
+      filter: brightness(1.08);
       transform: scale(1.02);
     }
 
@@ -370,7 +370,7 @@
     }
 
     .emptyday small {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 900;
       color: #000000;
       text-transform: uppercase;
@@ -383,16 +383,24 @@
       border-color: #e11d48 !important;
     }
 
-    .badge-work-switch {
-      font-size: 10px;
-      font-weight: 900;
+    /* Odznak v buňce, která byla z víkendu přepnuta na pracovní */
+    .btn-revert-weekend {
       background: #000000;
       color: #ffffff;
-      padding: 2px 6px;
+      border: none;
       border-radius: 4px;
-      margin-top: 6px;
-      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: background 0.15s ease;
+    }
+    .btn-revert-weekend:hover {
+      background: #b91c1c;
+      color: #ffffff;
     }
 
     /* HLAVIČKA DNE: ČÍSLO, POPISKA DNE A KAPKA */
@@ -438,7 +446,7 @@
       border-color: #3b82f6;
     }
 
-    /* DVA VELKÉ BLOKY: ADRESA & PRÁCE (NAHOŘE) A POZNÁMKA (DOLE) */
+    /* DVA BLOKY V POMĚRU 70% (ADRESA+PRÁCE) A 30% (POZNÁMKA) */
     .hero {
       display: flex;
       flex-direction: column;
@@ -447,21 +455,18 @@
       min-height: 0;
     }
 
-    .job, .note {
+    .job {
+      flex: 7 1 0% !important;
       position: relative;
-      flex: 1;
-      min-height: 56px;
+      min-height: 0;
       border-radius: 8px;
       padding: 8px 38px 8px 10px;
       word-break: break-word;
       white-space: pre-wrap;
-      overflow: hidden;
-      font-size: 20px;
+      overflow-y: auto;
+      font-size: 19px;
       font-weight: 800;
       line-height: 1.25;
-    }
-
-    .job {
       background: #ffffff;
       border: 1.5px solid var(--jobline);
       color: #1a1815;
@@ -480,6 +485,17 @@
     }
 
     .note {
+      flex: 3 1 0% !important;
+      position: relative;
+      min-height: 0;
+      border-radius: 8px;
+      padding: 6px 36px 6px 10px;
+      word-break: break-word;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.25;
       background: var(--note);
       border: 1.5px solid var(--noteline);
       color: #1b5e20;
@@ -489,12 +505,17 @@
       font-weight: 800;
     }
 
-    /* PO ZVONEČKU: ŽÁDNÉ BLIKÁNÍ, POUZE ČISTÉ ČERVENÉ ZVÝRAZNĚNÍ */
-    .note.alert-red {
-      background: #fee2e2 !important;
-      border-color: #ef4444 !important;
-      color: #991b1b !important;
-      animation: none !important;
+    /* ANIMOVANÉ BLIKÁNÍ PO ZVONEČKU */
+    .note.blink {
+      background: #fecdd3 !important;
+      border-color: #f43f5e !important;
+      color: #9f1239 !important;
+      animation: blinkNote 1s ease-in-out infinite !important;
+    }
+
+    @keyframes blinkNote {
+      0%, 100% { background: #fecdd3; }
+      50% { background: #ffe4e6; }
     }
 
     .mini {
@@ -690,7 +711,7 @@
     }
 
     /* ========================================================= */
-    /* MODÁLNÍ OKNA                                              */
+    /* MODÁLNÍ OKNA (VŠECHNA POLE MAJÍ JEDNOTNÝ VZHLED)          */
     /* ========================================================= */
     .modalback, .peopleback {
       position: fixed;
@@ -744,6 +765,7 @@
       text-transform: uppercase;
     }
 
+    /* JEDNOTNÝ STYL PRO VŠECHNA VSTUPNÍ POLE VČETNĚ POZNÁMKY */
     .field textarea, .field input, .personrow input {
       display: block;
       width: 100%;
@@ -999,14 +1021,14 @@
 
       .cell {
         aspect-ratio: auto;
-        min-height: 160px;
+        min-height: 170px;
         padding: 6px;
         gap: 4px;
         border-radius: 8px;
       }
 
       .cell.today {
-        min-height: 160px;
+        min-height: 170px;
         padding: 5px;
       }
 
@@ -1190,8 +1212,9 @@
     const D = ["Po","Út","St","Čt","Pá","So","Ne"];
     const M = ["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec"];
     
+    // Defaultní seznam lidí (synchronizovaný se Šichtovnicí: Doubi, ne stará Doubravka)
     let data = {};
-    let people = ["Martin","Saša","Petr","Dan","Doubravka","Veronika","Míša"];
+    let people = ["Martin","Saša","Petr","Dan","Doubi","Míša"];
     let view = "month";
     let cursor = new Date();
     let unsub = null;
@@ -1250,50 +1273,59 @@
       let isWeekendOrHoliday = (wd > 4 || !!hol);
       let isWorkOverride = get(k, "workday_override") === "1";
 
-      // Víkendy a svátky: pokud NENÍ přepnuto na pracovní mód, zobrazí se užší prázdné pole
+      // VÍKENDY A SVÁTKY: PŘEPNUTÍ POUHÝM JEDNÍM KLIKNUTÍM (BEZ MODÁLU)
       if (isWeekendOrHoliday && !isWorkOverride) {
         let e = document.createElement("div");
         e.className = (weekly ? "day" : "cell") + " emptyday" + (hol ? " holiday-cell" : "");
+        e.title = "Kliknutím přepnete na pracovní den";
         e.innerHTML = `<strong>${d.getDate()}. ${D[wd]}</strong>
-          <small>${hol ? hol : "VÍKEND"}</small>
-          <span class="badge-work-switch">Kliknutím zadat práci</span>`;
+          <small>${hol ? hol : "VÍKEND"}</small>`;
         
-        e.onclick = () => {
+        e.onclick = (ev) => {
+          ev.stopPropagation();
           put(k, "workday_override", "1");
-          openDay(k, d);
+          render();
         };
         return e;
       }
 
-      // DATA DNE: adresa, práce, poznámky, déšť, alert-red a lidé
+      // DATA DNE: adresa, práce, poznámky, déšť, blikání a lidé
       let a = get(k, "address"), w = get(k, "work"), n = get(k, "notes"), rain = get(k, "off") === "1", blink = get(k, "blink") === "1";
       
       let dayPeople = [];
-      try { dayPeople = JSON.parse(get(k, "people") || "[]"); } catch(err) {}
+      try {
+        let rawP = JSON.parse(get(k, "people") || "[]");
+        // Automatická normalizace starých jmen (např. Doubravka -> Doubi)
+        dayPeople = rawP.map(p => (p === "Doubravka" ? "Doubi" : p));
+      } catch(err) {}
 
       let e = document.createElement("div");
       e.className = weekly ? "day" : "cell";
       if (same(d, new Date())) e.classList.add("today");
 
+      // Tlačítko pro vrácení pracovního víkendu zpět na volno
+      let revertBtn = (isWeekendOrHoliday && isWorkOverride) 
+        ? `<button class="btn-revert-weekend" title="Vrátit víkendové volno">Zpět volno</button>` 
+        : "";
+
       let head = weekly 
-        ? `<div class="day-head"><span class="day-number">${d.getDate()}</span><span class="day-name">${D[wd]}</span><button class="drop" title="Déšť/volno">💧</button></div>`
-        : `<div class="head"><span class="num">${d.getDate()}.</span><span class="dow">${D[wd]}</span><button class="drop" title="Déšť/volno">💧</button></div>`;
+        ? `<div class="day-head"><span class="day-number">${d.getDate()}</span><span class="day-name">${D[wd]}</span>${revertBtn}<button class="drop" title="Déšť/volno">💧</button></div>`
+        : `<div class="head"><span class="num">${d.getDate()}.</span><span class="dow">${D[wd]}</span>${revertBtn}<button class="drop" title="Déšť/volno">💧</button></div>`;
 
       // 1. ZOBRAZENÍ: NEJPRVE ADRESA (S MAPOU), AŽ PAK PRÁCE
       let displayJob = "";
       if (rain) {
         displayJob = "Volno / Déšť";
       } else if (a && w) {
-        displayJob = a + "\n" + w; // Nejprve adresa, pak práce
+        displayJob = a + "\n" + w;
       } else {
         displayJob = a || w || "";
       }
 
-      // Vykreslení obou plnohodnotných velkých polí: Práce nahoře, Poznámka dole
-      // Poznámka se zvonečkem: nebliká, pouze se přepne do sytě červené (.alert-red)
+      // 70% ADRESA+PRÁCE, 30% POZNÁMKA. ZVONEČEK SPUSTÍ BLIKÁNÍ POZNÁMKY
       let heroHtml = `<div class="hero">
         <div class="job ${rain ? "rain" : ""}">${esc(displayJob)}${rain ? "" : pin(a)}</div>
-        <div class="note ${blink ? "alert-red" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Zvýraznit červeně">🔔</button></div>
+        <div class="note ${blink ? "blink" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Důležitá poznámka (blikat)">🔔</button></div>
       </div>`;
 
       // ŠTÍTKY VŠECH LIDÍ: VŠICHNI LIDÉ VYPSANÍ BEZ SKRÝVÁNÍ
@@ -1310,6 +1342,16 @@
         if (x.target.closest("button,a")) return;
         openDay(k, d);
       };
+
+      // Kliknutí na "Zpět volno" vrátí den na víkendový/sváteční mód bez otevření modálu
+      let revEl = e.querySelector(".btn-revert-weekend");
+      if (revEl) {
+        revEl.onclick = ev => {
+          ev.stopPropagation();
+          put(k, "workday_override", "0");
+          render();
+        };
+      }
 
       e.querySelector(".drop").onclick = x => {
         x.stopPropagation();
@@ -1333,35 +1375,19 @@
     function openDay(k, d) {
       currentKey = k;
       currentDate = new Date(d);
-      let sel = JSON.parse(get(k, "people") || "[]");
-      let blink = get(k, "blink") === "1";
-      let hol = holidayMap(d.getFullYear())[k];
-      let isWeekendOrHoliday = (d.getDay() === 0 || d.getDay() === 6 || !!hol);
-      let isWorkOverride = get(k, "workday_override") === "1";
+      
+      let rawP = [];
+      try { rawP = JSON.parse(get(k, "people") || "[]"); } catch(err) {}
+      let sel = rawP.map(p => (p === "Doubravka" ? "Doubi" : p));
 
+      // V modálu je poznámka vykreslena úplně stejně přes field(), bez alert tlačítka (ovládá se zvonečkem v okně)
       $("modal").innerHTML = `<h2>${d.toLocaleDateString("cs-CZ", { dateStyle: "full" })}</h2>
         <div class="fields">
-          ${isWeekendOrHoliday ? `
-            <div style="background:#e0e7ff; border:1.5px solid #6366f1; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-weight:900; color:#312e81; font-size:15px;">VÍKEND / SVÁTEK (${hol || "Víkend"})</span>
-              <button id="toggleWorkday" class="btn" style="height:32px; font-size:12px; background:#4338ca; color:#ffffff; border-color:#3730a3;">
-                ${isWorkOverride ? "Zrušit pracovní den (vrátit volno)" : "Přepnout na pracovní den"}
-              </button>
-            </div>
-          ` : ""}
-          ${field("address", "Adresa (nejprve v okně)", get(k, "address"))}
-          ${field("work", "Práce / Zakázka (až po adrese)", get(k, "work"))}
+          ${field("address", "Adresa (pro Google mapu)", get(k, "address"))}
+          ${field("work", "Práce / Zakázka", get(k, "work"))}
           ${field("material", "Materiál", get(k, "material"))}
           ${field("price", "Cena", get(k, "price"), true)}
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <label style="margin:0; font-size:15px; font-weight:900; text-transform:uppercase; color:var(--muted);">Poznámka</label>
-              <button id="toggleBlink" class="btn" style="height:32px; font-size:12px; padding:0 10px; border-color:${blink ? "#ef4444" : "var(--gold-dark)"}; background:${blink ? "#fee2e2" : "#111814"}; color:${blink ? "#991b1b" : "#fef08a"};">
-                🔔 ${blink ? "Červené zvýraznění: ZAPNUTO" : "Červené zvýraznění: VYPNUTO"}
-              </button>
-            </div>
-            <textarea data-f="notes" spellcheck="false">${esc(get(k, "notes"))}</textarea>
-          </div>
+          ${field("notes", "Poznámka", get(k, "notes"))}
           <div>
             <div class="people-head"><label>Lidé na směně</label><button id="editPeople" class="edit" title="Upravit seznam lidí">✎</button></div>
             <div class="people">${people.map(n => `<button class="person ${sel.includes(n) ? "selected" : ""}" data-p="${esc(n)}">${esc(n)}</button>`).join("")}</div>
@@ -1377,24 +1403,15 @@
       });
 
       $("modal").querySelectorAll("[data-p]").forEach(x => x.onclick = () => {
-        let l = JSON.parse(get(k, "people") || "[]"), i = l.indexOf(x.dataset.p);
-        i >= 0 ? l.splice(i, 1) : l.push(x.dataset.p);
+        let rawList = [];
+        try { rawList = JSON.parse(get(k, "people") || "[]"); } catch(err) {}
+        let l = rawList.map(p => (p === "Doubravka" ? "Doubi" : p));
+        let personName = x.dataset.p;
+        let i = l.indexOf(personName);
+        i >= 0 ? l.splice(i, 1) : l.push(personName);
         x.classList.toggle("selected");
         put(k, "people", JSON.stringify(l));
       });
-      
-      $("toggleBlink").onclick = () => {
-        let nextBlink = blink ? "0" : "1";
-        put(k, "blink", nextBlink);
-        openDay(k, d);
-      };
-
-      if (isWeekendOrHoliday && $("toggleWorkday")) {
-        $("toggleWorkday").onclick = () => {
-          put(k, "workday_override", isWorkOverride ? "0" : "1");
-          openDay(k, d);
-        };
-      }
 
       $("closeDay").onclick = () => {
         $("modalback").classList.remove("open");
@@ -1464,11 +1481,7 @@
       
       if (view === "month") {
         $("title").textContent = `${M[cursor.getMonth()]} ${cursor.getFullYear()}`;
-        let h = document.createElement("div");
-        h.className = "row";
-        D.forEach(x => h.innerHTML += `<div class="weekday">${x}</div>`);
-        r.appendChild(h);
-
+        
         let a = [], first = new Date(cursor.getFullYear(), cursor.getMonth(), 1), off = (first.getDay() + 6) % 7;
         for (let i = 0; i < off; i++) a.push(null);
         for (let i = 1; i <= new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate(); i++) {
@@ -1476,10 +1489,44 @@
         }
         while (a.length % 7) a.push(null);
 
+        // Zjištění, zda v nějakém řádku je víkend přepnutý do pracovního módu
+        let hasAnyWeekendOverride = a.some((d, idx) => {
+          if (!d) return false;
+          let wd = idx % 7;
+          if (wd > 4) {
+            let k = key(d);
+            return get(k, "workday_override") === "1";
+          }
+          return false;
+        });
+
+        let h = document.createElement("div");
+        h.className = "row";
+        if (hasAnyWeekendOverride) {
+          h.style.gridTemplateColumns = "repeat(7, minmax(0, 1fr))";
+        }
+        D.forEach(x => h.innerHTML += `<div class="weekday">${x}</div>`);
+        r.appendChild(h);
+
         for (let i = 0; i < a.length; i += 7) {
           let q = document.createElement("div");
           q.className = "row";
-          a.slice(i, i + 7).forEach((d, j) => {
+          
+          let rowChunk = a.slice(i, i + 7);
+          let sa = rowChunk[5], su = rowChunk[6];
+          let saOverride = sa && get(key(sa), "workday_override") === "1";
+          let suOverride = su && get(key(su), "workday_override") === "1";
+          
+          // Pokud je v daném řádku sobota nebo neděle přepnuta do práce, sloupec se zvětší na stejnou velikost jako pracovní den!
+          if (hasAnyWeekendOverride) {
+            q.style.gridTemplateColumns = "repeat(7, minmax(0, 1fr))";
+          } else if (saOverride || suOverride) {
+            let col6 = saOverride ? "minmax(0, 1fr)" : "82px";
+            let col7 = suOverride ? "minmax(0, 1fr)" : "82px";
+            q.style.gridTemplateColumns = `repeat(5, minmax(0, 1fr)) ${col6} ${col7}`;
+          }
+
+          rowChunk.forEach((d, j) => {
             q.appendChild(d ? makeDay(d, j) : Object.assign(document.createElement("div"), { className: "cell empty" }));
           });
           r.appendChild(q);
@@ -1503,10 +1550,25 @@
         
         let sa = new Date(s); sa.setDate(s.getDate() + 5);
         let su = new Date(s); su.setDate(s.getDate() + 6);
-        let w = document.createElement("div");
-        w.className = "weekend-share";
-        w.innerHTML = `<div class="weekend-half">${sa.getDate()}. So<small>VÍKEND</small></div><div class="weekend-half">${su.getDate()}. Ne<small>VÍKEND</small></div>`;
-        two.appendChild(w);
+        let saOverride = get(key(sa), "workday_override") === "1";
+        let suOverride = get(key(su), "workday_override") === "1";
+
+        if (saOverride || suOverride) {
+          two.appendChild(makeDay(sa, 5, true));
+          two.appendChild(makeDay(su, 6, true));
+          two.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
+        } else {
+          let w = document.createElement("div");
+          w.className = "weekend-share";
+          w.title = "Kliknutím přepnete na pracovní mód";
+          w.innerHTML = `<div class="weekend-half">${sa.getDate()}. So<small>VÍKEND</small></div><div class="weekend-half">${su.getDate()}. Ne<small>VÍKEND</small></div>`;
+          w.onclick = () => {
+            put(key(sa), "workday_override", "1");
+            put(key(su), "workday_override", "1");
+            render();
+          };
+          two.appendChild(w);
+        }
         r.append(one, two);
       }
     }
@@ -1565,7 +1627,11 @@
           let v = x.data();
           data[v.key + "_" + v.field] = v.value;
           if (v.key === "_settings" && v.field === "people") {
-            try { people = JSON.parse(v.value); } catch(e) {}
+            try {
+              let rawP = JSON.parse(v.value);
+              // Automatická migrace starého jména Doubravka na Doubi
+              people = rawP.map(p => (p === "Doubravka" ? "Doubi" : p));
+            } catch(e) {}
           }
         });
         state("Synchronizováno");
@@ -1586,9 +1652,9 @@
 
     render();
 
-    // Cache-busting registrace verze v7
+    // Cache-busting registrace verze v8
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=7', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=8', { updateViaCache: 'none' })
         .then(reg => {
           reg.update();
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
