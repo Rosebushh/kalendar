@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v4</title>
+  <title>Viola kalendář v5</title>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -18,12 +18,19 @@
       --rule: #1a1815;
       --rule-soft: #d9cfc0;
       
+      /* Barvy ze Šichtovnice */
       --weekend: #818cf8;
       --weekendink: #000000;
       --holiday: #fb7185;
       --holidayink: #000000;
       --today: #ccff00;
       --todaybg: #ccff00;
+      
+      /* Barvy bloků v okně */
+      --job: #ffffff;
+      --jobline: #d2a47c;
+      --note: #e8f5e9;
+      --noteline: #a5d6a7;
       
       --emerald: #10b981;
       --gold: #fcd34d;
@@ -44,7 +51,7 @@
     }
 
     /* ========================================================= */
-    /* TOPBAR ZÁHLAVÍ (PŘESNĚ JAKO V NÁHLEDU)                     */
+    /* HORNÍ ZÁHLAVÍ (TOPBAR) — NEON FUSION                      */
     /* ========================================================= */
     .topbar {
       background: radial-gradient(circle at 15% 50%, #0d2117 0%, #060e0a 100%) !important;
@@ -67,17 +74,22 @@
     }
 
     .top-brand-logo {
-      height: 44px;
+      height: 46px;
       width: auto;
       object-fit: contain;
       filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
     }
 
     .brand-title {
       color: var(--gold) !important;
       text-shadow: 0 0 14px rgba(252, 211, 77, 0.6), 0 0 24px rgba(52, 211, 153, 0.35) !important;
       font-weight: 900 !important;
-      font-size: 28px !important;
+      font-size: 30px !important;
       letter-spacing: 0.1em !important;
       text-transform: uppercase !important;
       line-height: 1 !important;
@@ -86,14 +98,13 @@
 
     .brand-sub {
       color: #6ee7b7 !important;
-      font-size: 11px !important;
+      font-size: 12px !important;
       font-weight: 700 !important;
       letter-spacing: 0.08em !important;
       text-transform: uppercase !important;
       margin-top: 2px !important;
     }
 
-    /* Navigace a přepínače */
     .nav {
       display: flex;
       align-items: center;
@@ -101,9 +112,9 @@
     }
 
     .nav h1 {
-      min-width: 170px;
+      min-width: 180px;
       text-align: center;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -112,7 +123,7 @@
       background: #111814;
       border: 1.5px solid var(--gold-dark);
       border-radius: 8px;
-      height: 38px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -120,14 +131,14 @@
     }
 
     .btn {
-      height: 38px;
-      padding: 0 14px;
+      height: 40px;
+      padding: 0 16px;
       border: 1.5px solid var(--gold-dark);
       border-radius: 8px;
       background: #111814;
       color: #fef08a;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 14px;
       letter-spacing: 0.05em;
       text-transform: uppercase;
       display: inline-flex;
@@ -145,9 +156,9 @@
     }
 
     .nav .btn {
-      width: 38px;
+      width: 40px;
       padding: 0;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 900;
     }
 
@@ -169,10 +180,10 @@
     }
 
     .switch button {
-      height: 32px;
+      height: 34px;
       border: 0;
       border-radius: 6px;
-      padding: 0 14px;
+      padding: 0 16px;
       background: transparent;
       color: #d4af37;
       font-weight: 800;
@@ -199,10 +210,10 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      height: 32px;
+      height: 34px;
       padding: 0 12px;
       border: 1.5px solid rgba(16, 185, 129, 0.5);
-      border-radius: 16px;
+      border-radius: 17px;
       background: rgba(16, 185, 129, 0.15);
       color: #6ee7b7;
       font-size: 12px;
@@ -236,26 +247,20 @@
     .sync.error .dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
     /* ========================================================= */
-    /* MŘÍŽKA KALENDÁŘE (VZHLED PŘESNĚ JAKO V NÁHLEDU)           */
+    /* MŘÍŽKA KALENDÁŘE: VÝRAZNĚ VĚTŠÍ OKNA A VELKÉ PÍSMO        */
     /* ========================================================= */
     .calendar, .week {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 6px;
       overflow-x: auto;
-      background: #1a1815;
-      padding: 3px;
-      border: 2.5px solid #1a1815;
-      border-radius: 16px;
-      box-shadow: 0 12px 36px rgba(0,0,0,0.18);
     }
 
-    /* 5 pracovních sloupců + 2 užší víkendy (82px) */
     .row {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr)) 82px 82px;
-      gap: 3px;
-      min-width: 900px;
+      gap: 6px;
+      min-width: 980px;
     }
 
     .weekday {
@@ -263,8 +268,8 @@
       color: #fef08a;
       background: #060a08;
       border: 1.5px solid var(--gold-dark);
-      border-radius: 6px;
-      font-size: 15px;
+      border-radius: 8px;
+      font-size: 16px;
       font-weight: 900;
       letter-spacing: 0.08em;
       padding: 8px 4px;
@@ -277,52 +282,49 @@
       border-color: #4f46e5;
     }
 
-    /* BĚŽNÉ BUŇKY DNE — KOMPAKTNÍ, ELEGANTNÍ KARTA JAKO V NÁHLEDU */
+    /* VÝRAZNĚ VĚTŠÍ BUŇKA PRACOVNÍHO DNE (MIN-HEIGHT 220px) */
     .cell {
       min-width: 0;
-      min-height: 125px;
-      border: 1px solid rgba(0,0,0,0.12);
-      border-radius: 8px;
+      min-height: 220px;
+      border: 2px solid var(--rule);
+      border-radius: 12px;
       background: #ffffff;
-      padding: 8px 9px 7px 9px;
+      padding: 10px 12px 10px 12px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 6px;
+      gap: 8px;
       cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       transition: all 0.15s ease;
     }
 
     .cell:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
     }
 
-    /* Střídání světlého a jemně teplého podkladu jako v šichtovnici */
     .cell.col-alt {
       background: #fbf7ee;
     }
 
-    /* DNEŠNÍ DEN: ZÁŘÍCÍ ŽLUTÁ #CCFF00 S ČERNÝM LEMEM JAKO V NÁHLEDU */
+    /* DNEŠNÍ DEN: ZÁŘÍCÍ ŽLUTÁ #CCFF00 PŘES CELÉ OKNO */
     .cell.today {
-      border: 3px solid #000000 !important;
+      border: 3.5px solid #000000 !important;
       background: #ccff00 !important;
-      box-shadow: 0 0 16px rgba(204, 255, 0, 0.7), inset 0 0 12px rgba(0,0,0,0.12) !important;
+      box-shadow: 0 0 20px rgba(204, 255, 0, 0.7), inset 0 0 14px rgba(0,0,0,0.12) !important;
     }
 
     .cell.today .num {
       color: #ccff00 !important;
       background: #000000 !important;
-      padding: 2px 6px !important;
-      border-radius: 4px !important;
-      font-size: 16px !important;
+      padding: 3px 8px !important;
+      border-radius: 6px !important;
+      font-size: 24px !important;
       font-weight: 900 !important;
     }
 
-    .cell.today .job-box {
-      background: #ffffff !important;
-      border: 2px solid #000000 !important;
+    .cell.today .job, .cell.today .note {
+      border-color: #000000 !important;
     }
 
     .cell.today .person-chip {
@@ -336,16 +338,17 @@
       opacity: 0.35;
       border-color: transparent !important;
       cursor: default;
+      box-shadow: none !important;
     }
 
-    /* VÍKENDOVÁ POLE: 82px ŠÍŘKA V INDIGOVÉM STYLU */
+    /* VÍKENDOVÁ POLE: CTÍ 82px ŠÍŘKU */
     .emptyday {
       min-width: 0;
-      min-height: 125px;
+      min-height: 220px;
       background: var(--weekend);
       color: var(--weekendink);
-      border: 1.5px solid #4f46e5;
-      border-radius: 8px;
+      border: 2px solid #4f46e5;
+      border-radius: 12px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -356,19 +359,19 @@
     }
 
     .emptyday strong {
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 900;
       color: #000000;
       line-height: 1;
     }
 
     .emptyday small {
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 900;
       color: #000000;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .emptyday.holiday-cell {
@@ -376,31 +379,39 @@
       border-color: #e11d48 !important;
     }
 
-    /* HLAVIČKA BUŇKY (ČÍSLO DNE + IKONKA DEŠTĚ) */
+    /* HLAVIČKA DNE: ČÍSLO A KAPKA */
     .head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 24px;
+      min-height: 32px;
     }
 
     .num {
-      font-size: 18px;
+      font-size: 24px;
       font-weight: 900;
       color: var(--ink);
       line-height: 1;
     }
 
+    .dow {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-left: 6px;
+      text-transform: uppercase;
+    }
+
     .drop {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid var(--rule-soft);
-      border-radius: 5px;
+      border: 1.5px solid var(--rule-soft);
+      border-radius: 6px;
       background: #ffffff;
-      font-size: 12px;
+      font-size: 14px;
       padding: 0;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -411,49 +422,61 @@
       border-color: #3b82f6;
     }
 
-    /* KARTA PRÁCE & POZNÁMKY (PŘESNĚ JAKO V NÁHLEDU) */
-    .job-box {
-      background: #ffffff;
-      border: 1.5px solid #d2a47c;
-      border-radius: 6px;
-      padding: 6px 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      position: relative;
+    /* HLAVNÍ PLOCHA PRO PRÁCI A POZNÁMKU (VELKÝ TEXT 18px-22px) */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-height: 0;
     }
 
-    .job-text {
-      font-size: 14px;
-      font-weight: 900;
-      color: #1a1815;
-      line-height: 1.25;
+    .job, .note {
+      position: relative;
+      flex: 1;
+      min-height: 52px;
+      border-radius: 8px;
+      padding: 8px 36px 8px 10px;
       word-break: break-word;
       white-space: pre-wrap;
+      overflow: hidden;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.25;
     }
 
-    .job-box.rain {
+    .job {
+      background: #ffffff;
+      border: 1.5px solid var(--jobline);
+      color: #1a1815;
+    }
+
+    .job.rain {
       background: var(--weekend) !important;
       border-color: #4f46e5 !important;
       color: #000000 !important;
-      text-align: center;
-      font-weight: 900;
-      font-size: 14px;
-      padding: 10px;
-    }
-
-    .note-line {
-      font-size: 12px;
-      font-weight: 700;
-      color: #b91c1c;
-      margin-top: 4px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 900;
     }
 
-    .note-line.blink {
-      background: #fecdd3;
-      padding: 2px 6px;
-      border-radius: 4px;
+    .note {
+      background: var(--note);
+      border: 1.5px solid var(--noteline);
+      color: #1b5e20;
+    }
+
+    .note.filled {
+      font-weight: 800;
+    }
+
+    .note.blink {
+      background: #fecdd3 !important;
+      border-color: #f43f5e !important;
+      color: #9f1239 !important;
       animation: blink 1s ease-in-out infinite;
     }
 
@@ -462,43 +485,61 @@
       50% { background: #ffe4e6; }
     }
 
-    .map-pin {
+    .mini {
       position: absolute;
-      right: 4px;
-      top: 4px;
+      right: 6px;
+      bottom: 6px;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid var(--rule-soft);
+      border-radius: 6px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .mini:hover {
+      transform: scale(1.15);
+    }
+
+    .map {
       color: var(--emerald);
       text-decoration: none;
     }
 
     .pin {
-      width: 13px;
-      height: 16px;
+      width: 15px;
+      height: 19px;
       display: block;
     }
     .pin path { fill: currentColor; }
     .pin circle { fill: #ffffff; }
 
-    /* ŠTÍTKY LIDÍ V BUŇCE (PŘESNĚ JAKO V NÁHLEDU) */
+    .bell {
+      color: #b91c1c;
+      font-size: 12px;
+    }
+
+    /* VŠICHNI LIDÉ VYPSANÍ JAKO ŠTÍTKY (ŽÁDNÉ SKRÝVÁNÍ DO +2) */
     .people-strip {
       display: flex;
       flex-wrap: wrap;
-      gap: 3px;
-      margin-top: 2px;
+      gap: 4px;
+      margin-top: 4px;
     }
 
     .person-chip {
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 800;
       background: #14512f;
       color: #ffffff;
-      padding: 1px 6px;
-      border-radius: 4px;
+      padding: 2px 8px;
+      border-radius: 5px;
       letter-spacing: 0.02em;
       white-space: nowrap;
-    }
-
-    .person-chip.more {
-      background: #6e6657;
     }
 
     /* ========================================================= */
@@ -508,7 +549,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
-      min-width: 900px;
+      min-width: 980px;
     }
 
     .week-row.second {
@@ -517,14 +558,14 @@
 
     .day {
       min-width: 0;
-      height: 500px;
+      height: 520px;
       border: 2px solid var(--rule);
       border-radius: 12px;
       background: #ffffff;
-      padding: 14px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0,0,0,0.06);
     }
@@ -550,13 +591,13 @@
     }
 
     .day-number {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 900;
       line-height: 1;
     }
 
     .day-name {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 900;
       text-transform: uppercase;
       color: var(--muted);
@@ -566,36 +607,39 @@
     .day .drop {
       position: static;
       transform: none;
-      width: 32px;
-      height: 32px;
-      font-size: 16px;
+      width: 34px;
+      height: 34px;
+      font-size: 18px;
     }
 
-    .day .job-box {
-      padding: 14px 16px;
-      border-width: 2px;
-    }
-
-    .day .job-text {
-      font-size: 19px;
+    .day .job {
+      font-size: 22px;
       font-weight: 900;
       line-height: 1.35;
+      padding: 14px 48px 14px 14px;
     }
 
-    .day .note-line {
-      font-size: 16px;
+    .day .note {
+      font-size: 20px;
       font-weight: 800;
-      margin-top: 8px;
+      line-height: 1.35;
+      padding: 14px 48px 14px 14px;
+    }
+
+    .day .mini {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
     }
 
     .day .person-chip {
-      font-size: 13px;
-      padding: 3px 10px;
+      font-size: 15px;
+      padding: 3px 12px;
       border-radius: 6px;
     }
 
     .weekend-share {
-      height: 500px;
+      height: 520px;
       border: 2.5px solid #4f46e5;
       border-radius: 12px;
       background: var(--weekend);
@@ -611,7 +655,7 @@
       align-items: center;
       text-align: center;
       color: var(--weekendink);
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 900;
       padding: 12px;
     }
@@ -622,14 +666,14 @@
 
     .weekend-half small {
       margin-top: 8px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
 
     /* ========================================================= */
-    /* MODÁLNÍ OKNA (DETAIL DNE, SPRÁVA LIDÍ)                    */
+    /* MODÁLNÍ OKNA                                              */
     /* ========================================================= */
     .modalback, .peopleback {
       position: fixed;
@@ -647,7 +691,7 @@
     }
 
     .modal, .peoplemodal {
-      width: min(840px, 95vw);
+      width: min(860px, 95vw);
       max-height: calc(100vh - 40px);
       overflow-y: auto;
       background: #fffdf9;
@@ -677,7 +721,7 @@
       display: block;
       margin-bottom: 6px;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 900;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -686,19 +730,19 @@
     .field textarea, .field input, .personrow input {
       display: block;
       width: 100%;
-      height: 84px;
+      height: 90px;
       border: 1.5px solid var(--jobline);
       border-radius: 8px;
       background: #ffffff;
-      padding: 10px 14px;
+      padding: 12px 14px;
       color: var(--ink);
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
       resize: none;
     }
 
     .field.price input {
-      height: 44px;
+      height: 48px;
     }
 
     .people-head {
@@ -713,13 +757,13 @@
     }
 
     .edit {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border: 1.5px solid var(--rule-soft);
       border-radius: 6px;
       background: #ffffff;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .people {
@@ -729,12 +773,12 @@
     }
 
     .person {
-      height: 38px;
+      height: 40px;
       padding: 0 16px;
       border: 1.5px solid var(--rule-soft);
-      border-radius: 19px;
+      border-radius: 20px;
       background: #ffffff;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 800;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -755,14 +799,14 @@
     }
 
     .close, .personrow button, .addrow button {
-      height: 44px;
-      padding: 0 26px;
+      height: 46px;
+      padding: 0 28px;
       border: 0;
       border-radius: 8px;
       background: #14462e;
       color: var(--gold);
       font-weight: 900;
-      font-size: 15px;
+      font-size: 16px;
       letter-spacing: 0.05em;
       text-transform: uppercase;
       cursor: pointer;
@@ -780,8 +824,8 @@
       gap: 8px;
       margin: 8px 0;
     }
-    .personrow input { height: 42px; flex: 1; }
-    .personrow button { height: 42px; padding: 0 12px; }
+    .personrow input { height: 44px; flex: 1; }
+    .personrow button { height: 44px; padding: 0 14px; }
 
     .addrow {
       display: flex;
@@ -789,12 +833,12 @@
       margin-top: 14px;
     }
     .addrow input {
-      height: 42px;
+      height: 44px;
       flex: 1;
       border: 1.5px solid var(--rule-soft);
       border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 16px;
+      padding: 8px 14px;
+      font-size: 17px;
     }
 
     /* ========================================================= */
@@ -938,72 +982,80 @@
 
       .cell {
         aspect-ratio: auto;
-        min-height: 140px;
-        padding: 4px 4px;
-        gap: 3px;
-        border-radius: 6px;
+        min-height: 160px;
+        padding: 6px;
+        gap: 4px;
+        border-radius: 8px;
       }
 
       .cell.today {
-        min-height: 140px;
-        padding: 3px 3px;
+        min-height: 160px;
+        padding: 5px;
       }
 
       .weekday {
-        font-size: 11px;
-        padding: 3px;
+        font-size: 12px;
+        padding: 4px;
       }
 
       .num {
-        font-size: 14px;
+        font-size: 16px;
       }
 
       .drop {
-        width: 20px;
-        height: 20px;
-        font-size: 10px;
-      }
-
-      .job-text {
+        width: 22px;
+        height: 22px;
         font-size: 11px;
       }
 
-      .note-line {
+      .job, .note {
+        padding: 6px 26px 6px 6px;
+        font-size: 13px;
+        min-height: 40px;
+      }
+
+      .mini {
+        width: 20px;
+        height: 20px;
+        right: 4px;
+        bottom: 4px;
         font-size: 10px;
       }
 
       .person-chip {
-        font-size: 9px;
-        padding: 1px 4px;
+        font-size: 10px;
+        padding: 1px 5px;
       }
 
       .emptyday {
-        height: 40px;
-        min-height: 40px;
+        height: 44px;
+        min-height: 44px;
       }
 
       .emptyday strong {
-        font-size: 12px;
+        font-size: 13px;
       }
       .emptyday small {
-        font-size: 9px;
+        font-size: 10px;
       }
 
       .week-row {
         min-width: 0;
       }
       .day {
-        height: 280px;
-        padding: 8px;
+        height: 300px;
+        padding: 10px;
       }
       .day-number, .day-name {
-        font-size: 18px;
+        font-size: 20px;
       }
-      .day .job-text {
+      .day .job {
+        font-size: 16px;
+        padding: 10px 36px 10px 10px;
+      }
+      .day .note {
         font-size: 14px;
-      }
-      .day .note-line {
-        font-size: 12px;
+        padding: 10px 36px 10px 10px;
       }
 
       .week-row.second {
@@ -1011,16 +1063,16 @@
       }
       .week-row.second .weekend-share {
         grid-column: 3;
-        height: 280px;
+        height: 300px;
       }
       .weekend-share {
-        height: 280px;
+        height: 300px;
       }
       .weekend-half {
-        font-size: 16px;
+        font-size: 18px;
       }
       .weekend-half small {
-        font-size: 11px;
+        font-size: 12px;
       }
     }
   </style>
@@ -1149,7 +1201,7 @@
       good.setDate(good.getDate()-2);
       em.setDate(em.getDate()+1);
       add(good.getMonth()+1, good.getDate(), "Velký pátek");
-      add(em.getMonth()+1, good.getDate(), "Velikonoční pondělí");
+      add(em.getMonth()+1, em.getDate(), "Velikonoční pondělí");
       return o;
     }
 
@@ -1172,7 +1224,7 @@
     }
 
     function pin(a) {
-      return a ? `<a class="map-pin" target="_blank" href="https://www.google.com/maps/search/${encodeURIComponent(a)}" aria-label="Mapa" title="Otevřít v Google Mapách"><svg class="pin" viewBox="0 0 24 30"><path d="M12 29S3 18.6 3 11.2C3 5.5 7 1 12 1s9 4.5 9 10.2C21 18.6 12 29 12 29Z"/><circle cx="12" cy="11" r="3.5"/></svg></a>` : "";
+      return a ? `<a class="mini map" target="_blank" href="https://www.google.com/maps/search/${encodeURIComponent(a)}" aria-label="Mapa" title="Otevřít v Google Mapách"><svg class="pin" viewBox="0 0 24 30"><path d="M12 29S3 18.6 3 11.2C3 5.5 7 1 12 1s9 4.5 9 10.2C21 18.6 12 29 12 29Z"/><circle cx="12" cy="11" r="3.5"/></svg></a>` : "";
     }
 
     function makeDay(d, wd, weekly=false) {
@@ -1186,7 +1238,9 @@
         return e;
       }
 
+      // DATA DNE: adresa, práce, poznámky, déšť, blikání a lidé
       let a = get(k, "address"), w = get(k, "work"), n = get(k, "notes"), rain = get(k, "off") === "1", blink = get(k, "blink") === "1";
+      
       let dayPeople = [];
       try { dayPeople = JSON.parse(get(k, "people") || "[]"); } catch(err) {}
 
@@ -1197,34 +1251,33 @@
 
       let head = weekly 
         ? `<div class="day-head"><span class="day-number">${d.getDate()}</span><span class="day-name">${D[wd]}</span><button class="drop" title="Déšť/volno">💧</button></div>`
-        : `<div class="head"><span class="num">${d.getDate()}.</span><button class="drop" title="Déšť/volno">💧</button></div>`;
+        : `<div class="head"><span class="num">${d.getDate()}.</span><span class="dow">${D[wd]}</span><button class="drop" title="Déšť/volno">💧</button></div>`;
 
-      // Display job title: work description if exists, or address
-      let mainText = rain ? "Volno / Déšť" : (w || a || "");
-      let jobContent = "";
-      
+      // Text práce: pokud je vyplněna práce, zobraz ji; pokud adresa, zobraz ji; pokud obojí, práce + adresa
+      let displayJob = "";
       if (rain) {
-        jobContent = `<div class="job-box rain">Volno / Déšť</div>`;
-      } else if (mainText) {
-        jobContent = `<div class="job-box">
-          <div class="job-text">${esc(mainText)}${pin(a)}</div>
-          ${n ? `<div class="note-line ${blink ? "blink" : ""}"><span>🔔</span> <span style="truncate">${esc(n)}</span></div>` : ""}
-        </div>`;
+        displayJob = "Volno / Déšť";
+      } else if (w && a) {
+        displayJob = w + " · " + a;
       } else {
-        jobContent = `<div style="flex:1; display:flex; align-items:center; justify-content:center; color:#b0a89c; font-size:15px; font-weight:800;">+</div>`;
+        displayJob = w || a || "";
       }
 
-      // People chips strip
-      let peopleContent = "";
+      // Vykreslení obou plnohodnotných polí (práce i poznámka) jako v původním kalendáři
+      let heroHtml = `<div class="hero">
+        <div class="job ${rain ? "rain" : ""}">${esc(displayJob)}${rain ? "" : pin(a)}</div>
+        <div class="note ${blink ? "blink" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Důležitá poznámka">🔔</button></div>
+      </div>`;
+
+      // ŠTÍTKY VŠECH LIDÍ: VŠICHNI LIDÉ VYPSANÍ BEZ SKRÝVÁNÍ
+      let peopleHtml = "";
       if (dayPeople && dayPeople.length > 0) {
-        let chips = dayPeople.slice(0, 3).map(p => `<span class="person-chip">${esc(p)}</span>`).join("");
-        if (dayPeople.length > 3) {
-          chips += `<span class="person-chip more">+${dayPeople.length - 3}</span>`;
-        }
-        peopleContent = `<div class="people-strip">${chips}</div>`;
+        peopleHtml = `<div class="people-strip">
+          ${dayPeople.map(p => `<span class="person-chip">${esc(p)}</span>`).join("")}
+        </div>`;
       }
 
-      e.innerHTML = head + jobContent + peopleContent;
+      e.innerHTML = head + heroHtml + peopleHtml;
 
       e.onclick = x => {
         if (x.target.closest("button,a")) return;
@@ -1234,6 +1287,12 @@
       e.querySelector(".drop").onclick = x => {
         x.stopPropagation();
         put(k, "off", rain ? "0" : "1");
+        render();
+      };
+
+      e.querySelector(".bell").onclick = x => {
+        x.stopPropagation();
+        put(k, "blink", blink ? "0" : "1");
         render();
       };
 
@@ -1248,23 +1307,14 @@
       currentKey = k;
       currentDate = new Date(d);
       let sel = JSON.parse(get(k, "people") || "[]");
-      let blink = get(k, "blink") === "1";
 
       $("modal").innerHTML = `<h2>${d.toLocaleDateString("cs-CZ", { dateStyle: "full" })}</h2>
         <div class="fields">
-          ${field("work", "Práce / Zakázka", get(k, "work"))}
-          ${field("address", "Adresa (pro mapu)", get(k, "address"))}
+          ${field("address", "Adresa", get(k, "address"))}
+          ${field("work", "Práce", get(k, "work"))}
           ${field("material", "Materiál", get(k, "material"))}
           ${field("price", "Cena", get(k, "price"), true)}
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <label style="margin:0; font-size:14px; font-weight:900; text-transform:uppercase; color:var(--muted);">Poznámka</label>
-              <button id="toggleBlink" class="btn" style="height:30px; font-size:11px; padding:0 8px; border-color:${blink ? "#ef4444" : "var(--gold-dark)"}; background:${blink ? "#fee2e2" : "#111814"}; color:${blink ? "#b91c1c" : "#fef08a"};">
-                🔔 ${blink ? "Bliká (Důležité)" : "Normální"}
-              </button>
-            </div>
-            <textarea data-f="notes" spellcheck="false">${esc(get(k, "notes"))}</textarea>
-          </div>
+          ${field("notes", "Poznámka", get(k, "notes"))}
           <div>
             <div class="people-head"><label>Lidé na směně</label><button id="editPeople" class="edit" title="Upravit seznam lidí">✎</button></div>
             <div class="people">${people.map(n => `<button class="person ${sel.includes(n) ? "selected" : ""}" data-p="${esc(n)}">${esc(n)}</button>`).join("")}</div>
@@ -1273,7 +1323,12 @@
         <div class="footer"><button id="closeDay" class="close">Zavřít</button></div>`;
       
       $("modalback").classList.add("open");
-      $("modal").querySelectorAll("[data-f]").forEach(x => x.oninput = () => put(k, x.dataset.f, x.value));
+      
+      // Při psaní do jakéhokoliv pole (i poznámky) ukládáme do Firestore
+      $("modal").querySelectorAll("[data-f]").forEach(x => {
+        x.oninput = () => put(k, x.dataset.f, x.value);
+      });
+
       $("modal").querySelectorAll("[data-p]").forEach(x => x.onclick = () => {
         let l = JSON.parse(get(k, "people") || "[]"), i = l.indexOf(x.dataset.p);
         i >= 0 ? l.splice(i, 1) : l.push(x.dataset.p);
@@ -1281,13 +1336,11 @@
         put(k, "people", JSON.stringify(l));
       });
       
-      $("toggleBlink").onclick = () => {
-        let nextBlink = blink ? "0" : "1";
-        put(k, "blink", nextBlink);
-        openDay(k, d);
+      $("closeDay").onclick = () => {
+        $("modalback").classList.remove("open");
+        render(); // Okamžité překreslení kalendáře po zavření modálu
       };
-
-      $("closeDay").onclick = () => { $("modalback").classList.remove("open"); render(); };
+      
       $("editPeople").onclick = openPeople;
     }
 
@@ -1454,7 +1507,7 @@
     render();
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=4', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=5', { updateViaCache: 'none' })
         .then(reg => {
           reg.update();
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
