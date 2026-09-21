@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v12</title>
+  <title>Viola kalendář v13</title>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -1391,7 +1391,7 @@
     }
 
 
-    // SVG ikony podle zadání uživatele (Screenshot 1: 3D složená mapa s červeným pinem, Screenshot 2: 3 kapky v modré barvě)
+    // SVG ikony podle screenshotů (Screenshot 1: 3D mapa se špendlíkem, Screenshot 2: 3 modré kapky)
     const DROP_ICON_SVG = `<svg class="icon-drop-svg" viewBox="0 0 100 100">
       <g fill="#2563eb">
         <!-- Horní malá kapka -->
@@ -1488,22 +1488,6 @@
       // POLE DNE MÁ NYNÍ 100% PROSTOR PRO TEXT BEZ IKONY MAPY
       let heroHtml = `<div class="hero">
         <div class="job ${rain ? "rain" : ""}">${esc(displayJob)}</div>
-        <div class="note ${blink ? "blink" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Důležitá poznámka (blikat)">🔔</button></div>
-      </div>`;
-
-      // 1. ZOBRAZENÍ: NEJPRVE ADRESA (S MAPOU), AŽ PAK PRÁCE
-      let displayJob = "";
-      if (rain) {
-        displayJob = "Volno / Déšť";
-      } else if (a && w) {
-        displayJob = a + "\n" + w;
-      } else {
-        displayJob = a || w || "";
-      }
-
-      // 70% ADRESA+PRÁCE, 30% POZNÁMKA. ZVONEČEK SPUSTÍ BLIKÁNÍ POZNÁMKY
-      let heroHtml = `<div class="hero">
-        <div class="job ${rain ? "rain" : ""}">${esc(displayJob)}${rain ? "" : pin(a)}</div>
         <div class="note ${blink ? "blink" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Důležitá poznámka (blikat)">🔔</button></div>
       </div>`;
 
@@ -1815,7 +1799,7 @@
 
     // Cache-busting registrace verze v8
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=12', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=13', { updateViaCache: 'none' })
         .then(reg => {
           reg.update();
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
