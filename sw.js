@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viola-kalendar-v9';
+const CACHE_NAME = 'viola-kalendar-v10';
 const ASSETS = [
   './',
   './index.html',

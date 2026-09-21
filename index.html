@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v9</title>
+  <title>Viola kalendář v10</title>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -1214,13 +1214,13 @@
     import { getFirestore, collection, onSnapshot, doc, setDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: atob("QUl6YVN5RHk0U2tNMTVyU0k3eUdvdjR4a3l5R3JkQW5yRGRBODVB"),
+        const firebaseConfig = {
+      apiKey: "AIzaSyDrecQjOWJu_QorSqcurfwRzb0s3ZEfCKU",
       authDomain: "viola-kalendar.firebaseapp.com",
       projectId: "viola-kalendar",
-      storageBucket: "viola-kalendar.appspot.com",
-      messagingSenderId: "148680790827",
-      appId: "1:148680790827:web:d82e2c222ffda565db4057"
+      storageBucket: "viola-kalendar.firebasestorage.app",
+      messagingSenderId: "313947429240",
+      appId: "1:313947429240:web:5684c85b52607765f3d08d"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -1665,7 +1665,7 @@
 
     // Registrace Service Workeru s network-first a okamžitou aktivací (v9)
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js?v=9").then(reg => {
+      navigator.serviceWorker.register("./sw.js?v=10").then(reg => {
         reg.update();
       }).catch(err => console.log("SW error", err));
     }
