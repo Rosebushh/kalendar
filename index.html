@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v11</title>
+  <title>Viola kalendář v12</title>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -426,6 +426,50 @@
       padding: 4px 10px;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
+      gap: 6px;
+    }
+
+    .head-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .head-btn {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--gold-dark);
+      border-radius: 6px;
+      background: #111814;
+      padding: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .head-btn:hover {
+      transform: scale(1.15);
+      border-color: #fde047;
+      background: #1b2620;
+    }
+
+    .head-btn.drop-btn.active {
+      background: #2563eb !important;
+      border-color: #60a5fa !important;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.7);
+    }
+    .head-btn.drop-btn.active .icon-drop-svg g {
+      fill: #ffffff !important;
+    }
+
+    .icon-drop-svg, .icon-map-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .head-left {
@@ -483,11 +527,12 @@
       position: relative;
       min-height: 0;
       border-radius: 8px;
-      padding: 8px 38px 8px 10px;
-      word-break: break-word;
+      padding: 8px 10px;
+      word-break: normal;
+      overflow-wrap: break-word;
       white-space: pre-wrap;
       overflow-y: auto;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 800;
       line-height: 1.25;
       background: #ffffff;
@@ -495,16 +540,20 @@
       color: #1a1815;
     }
 
+    /* CENTROVÁNÍ TEXTU VOLNO / DÉŠŤ PŘESNĚ DOPROSTŘED POLE */
     .job.rain {
-      background: var(--weekend) !important;
-      border-color: #4f46e5 !important;
-      color: #000000 !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 22px;
-      font-weight: 900;
+      background: #dbeafe !important;
+      border-color: #3b82f6 !important;
+      color: #1e3a8a !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      font-size: 24px !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      box-shadow: inset 0 0 12px rgba(59, 130, 246, 0.15);
     }
 
     .note {
@@ -1122,8 +1171,13 @@
       .job {
         font-size: 16px;
         font-weight: 900;
-        padding: 6px 32px 6px 8px;
-        min-height: 70px;
+        padding: 6px 8px;
+        word-break: normal;
+        overflow-wrap: break-word;
+        min-height: 60px;
+      }
+      .job.rain {
+        font-size: 20px !important;
       }
 
       .note {
@@ -1336,9 +1390,41 @@
       }
     }
 
-    // Ikona mapy se váže VÝHRADNĚ k adrese
-    function pin(a) {
-      return a ? `<a class="mini map" target="_blank" href="https://www.google.com/maps/search/${encodeURIComponent(a)}" aria-label="Mapa" title="Otevřít adresu v Google Mapách"><svg class="pin" viewBox="0 0 24 30"><path d="M12 29S3 18.6 3 11.2C3 5.5 7 1 12 1s9 4.5 9 10.2C21 18.6 12 29 12 29Z"/><circle cx="12" cy="11" r="3.5"/></svg></a>` : "";
+
+    // SVG ikony podle zadání uživatele (Screenshot 1: 3D složená mapa s červeným pinem, Screenshot 2: 3 kapky v modré barvě)
+    const DROP_ICON_SVG = `<svg class="icon-drop-svg" viewBox="0 0 100 100">
+      <g fill="#2563eb">
+        <!-- Horní malá kapka -->
+        <path d="M54,14 C54,14 43,28 43,35 C43,41.5 48,46.5 54,46.5 C60,46.5 65,41.5 65,35 C65,28 54,14 54,14 Z" />
+        <path d="M47,34 C46.5,37 48,39 50,39" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" fill="none" />
+        <!-- Pravá střední kapka -->
+        <path d="M68,40 C68,40 58,52 58,58 C58,64 62.5,69 68,69 C73.5,69 78,64 78,58 C78,52 68,40 68,40 Z" />
+        <path d="M61,56 C60.5,60 62,62 64.5,62" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" fill="none" />
+        <!-- Levá velká kapka -->
+        <path d="M38,38 C38,38 22,58 22,68 C22,79.5 30,88 40,88 C50,88 58,79.5 58,68 C58,58 38,38 38,38 Z" />
+        <path d="M29,66 C27.5,73 31,80 36,80" stroke="#93c5fd" stroke-width="4" stroke-linecap="round" fill="none" />
+      </g>
+    </svg>`;
+
+    const MAP_ICON_SVG = `<svg class="icon-map-svg" viewBox="0 0 100 100">
+      <!-- Složená mapa se 4 panely -->
+      <polygon points="10,58 35,46 35,84 10,94" fill="#a7f3d0" stroke="#111814" stroke-width="3.5" stroke-linejoin="round" />
+      <polygon points="35,46 50,55 50,92 35,84" fill="#fed7aa" stroke="#111814" stroke-width="3.5" stroke-linejoin="round" />
+      <polygon points="50,55 65,46 65,84 50,92" fill="#fde68a" stroke="#111814" stroke-width="3.5" stroke-linejoin="round" />
+      <polygon points="65,46 90,58 90,94 65,84" fill="#a7f3d0" stroke="#111814" stroke-width="3.5" stroke-linejoin="round" />
+      <!-- Řeka a vrstevnice na mapě -->
+      <path d="M54,53 Q62,64 57,76 Q53,84 57,90" stroke="#38bdf8" stroke-width="6" fill="none" stroke-linecap="round" />
+      <path d="M18,55 Q28,68 22,82" stroke="#111814" stroke-width="2" fill="none" />
+      <path d="M72,52 Q82,66 76,82" stroke="#111814" stroke-width="2" fill="none" />
+      <path d="M35,65 Q50,70 65,65" stroke="#111814" stroke-width="2" fill="none" />
+      <!-- Velký červený mapový špendlík -->
+      <path d="M50,8 C34,8 24,19 24,34 C24,51 46,69 50,72 C54,69 76,51 76,34 C76,19 66,8 50,8 Z" fill="#ef4444" stroke="#111814" stroke-width="4" stroke-linejoin="round" />
+      <circle cx="50" cy="30" r="8.5" fill="#ffffff" stroke="#111814" stroke-width="3.5" />
+    </svg>`;
+
+    // Tlačítko mapy v záhlaví vedle kapky (nejdřív kapka, pak mapa)
+    function mapBtn(a) {
+      return a ? `<a class="head-btn map-btn" target="_blank" href="https://www.google.com/maps/search/${encodeURIComponent(a)}" aria-label="Otevřít adresu v Google Mapách" title="Otevřít adresu v Google Mapách">${MAP_ICON_SVG}</a>` : "";
     }
 
     function makeDay(d, wd, weekly=false) {
@@ -1382,9 +1468,28 @@
         ? `<button class="btn-revert-weekend" title="Vrátit víkendové volno">Zpět volno</button>` 
         : "";
 
+      // ČERNO-ZLATÁ HLAVIČKA DNE: ČÍSLO A DEN VLEVO, VPRAVO NEJDŘÍV KAPKA, PAK MAPA
+      let actionsHtml = `<div class="head-actions"><button class="head-btn drop-btn ${rain ? "active" : ""}" title="Déšť / volno">${DROP_ICON_SVG}</button>${mapBtn(a)}</div>`;
+
       let head = weekly 
-        ? `<div class="day-head"><div class="day-head-left"><span class="day-number">${d.getDate()}.</span><span class="day-name">${D[wd]}</span>${revertBtn}</div><button class="drop" title="Déšť/volno">💧</button></div>`
-        : `<div class="head"><div class="head-left"><span class="num">${d.getDate()}.</span><span class="dow">${D[wd]}</span>${revertBtn}</div><button class="drop" title="Déšť/volno">💧</button></div>`;
+        ? `<div class="day-head"><div class="day-head-left"><span class="day-number">${d.getDate()}.</span><span class="day-name">${D[wd]}</span>${revertBtn}</div>${actionsHtml}</div>`
+        : `<div class="head"><div class="head-left"><span class="num">${d.getDate()}.</span><span class="dow">${D[wd]}</span>${revertBtn}</div>${actionsHtml}</div>`;
+
+      // ZOBRAZENÍ: ŽÁDNÉ ZBYTEČNÉ ODŘÁDKOVÁNÍ! PŘIROZENÉ VYUŽITÍ CELÉ ŠÍŘKY POLE
+      let displayJob = "";
+      if (rain) {
+        displayJob = "Volno / Déšť";
+      } else if (a && w) {
+        displayJob = a + (a.endsWith(",") || a.endsWith(" -") ? " " : " · ") + w;
+      } else {
+        displayJob = a || w || "";
+      }
+
+      // POLE DNE MÁ NYNÍ 100% PROSTOR PRO TEXT BEZ IKONY MAPY
+      let heroHtml = `<div class="hero">
+        <div class="job ${rain ? "rain" : ""}">${esc(displayJob)}</div>
+        <div class="note ${blink ? "blink" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Důležitá poznámka (blikat)">🔔</button></div>
+      </div>`;
 
       // 1. ZOBRAZENÍ: NEJPRVE ADRESA (S MAPOU), AŽ PAK PRÁCE
       let displayJob = "";
@@ -1427,7 +1532,7 @@
         };
       }
 
-      e.querySelector(".drop").onclick = x => {
+      e.querySelector(".drop-btn").onclick = x => {
         x.stopPropagation();
         put(k, "off", rain ? "0" : "1");
         render();
@@ -1710,7 +1815,7 @@
 
     // Cache-busting registrace verze v8
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=11', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=12', { updateViaCache: 'none' })
         .then(reg => {
           reg.update();
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
