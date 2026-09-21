@@ -1,5 +1,5 @@
 // VIOLA KALENDÁŘ - Network-First Service Worker v9
-const CACHE_NAME = 'viola-kalendar-v9';
+const CACHE_NAME = 'viola-kalendar-v11';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
