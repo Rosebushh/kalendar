@@ -5,7 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#060a08">
   <link rel="manifest" href="manifest.json">
-  <title>Viola kalendář v15</title>
+  <title>Viola kalendář v17</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <script>
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        names.forEach(function(name) {
+          if (name !== 'viola-kalendar-v17') {
+            caches.delete(name);
+          }
+        });
+      });
+    }
+  </script>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap">
 
@@ -450,11 +464,13 @@
       min-height: 38px;
       background: #060a08;
       border-bottom: 1.5px solid var(--gold-dark);
-      margin: -10px -12px 6px -12px;
+      margin: 0 -10px 6px -10px;
       padding: 4px 10px;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
       gap: 6px;
+      width: calc(100% + 20px);
+      box-sizing: border-box;
     }
 
     .head-actions {
@@ -521,17 +537,17 @@
       letter-spacing: 0.05em;
     }
 
-    /* DVA BLOKY V POMĚRU 70% (ADRESA+PRÁCE) A 30% (POZNÁMKA) */
+    /* DVA BLOKY: ADRESA+PRÁCE (70%) A POZNÁMKA (30%) S ADAPTIVNÍM PŘIZPŮSOBENÍM */
     .hero {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      flex: 1;
+      flex: 1 1 auto;
       min-height: 0;
     }
 
     .job {
-      flex: 7 1 0% !important;
+      flex: 7 1 auto !important;
       position: relative;
       min-height: 0;
       border-radius: 8px;
@@ -540,12 +556,36 @@
       overflow-wrap: break-word;
       white-space: pre-wrap;
       overflow-y: auto;
+      background: #ffffff;
+      border: 1.5px solid var(--jobline);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Rozdělení bloku Adresa (30%) a Práce (70%) s tenkou linkou a adaptivním růstem */
+    .job-addr {
+      flex: 3 1 auto;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #111111; /* Černá barva pro adresu */
+    }
+
+    .job-split {
+      height: 1px;
+      background: #e5d5c5;
+      border: none;
+      margin: 2px 0;
+      flex-shrink: 0;
+    }
+
+    .job-desc {
+      flex: 7 1 auto;
       font-size: 18px;
       font-weight: 800;
       line-height: 1.25;
-      background: #ffffff;
-      border: 1.5px solid var(--jobline);
-      color: #1a1815;
+      color: #78350f; /* Hnědá barva pro práci */
     }
 
     /* CENTROVÁNÍ TEXTU VOLNO / DÉŠŤ PŘESNĚ DOPROSTŘED POLE */
@@ -565,7 +605,7 @@
     }
 
     .note {
-      flex: 3 1 0% !important;
+      flex: 3 1 auto !important;
       position: relative;
       min-height: 0;
       border-radius: 8px;
@@ -578,30 +618,30 @@
       line-height: 1.25;
       background: var(--note);
       border: 1.5px solid var(--noteline);
-      color: #1b5e20;
+      color: #991b1b !important; /* Tmavě červená barva pro poznámku */
     }
 
     .note.filled {
       font-weight: 800;
     }
 
-    /* ANIMOVANÉ VÝRAZNÉ BLIKÁNÍ PO ZVONEČKU */
+    /* ANIMOVANÉ VÝRAZNÉ BLIKÁNÍ PO ZVONEČKU V TMAVĚ ČERVENÉ */
     .note.blink {
       animation: notePulse 0.9s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
     }
 
     @keyframes notePulse {
       0%, 100% {
-        background-color: #e11d48 !important;
-        border-color: #881337 !important;
+        background-color: #991b1b !important;
+        border-color: #7f1d1d !important;
         color: #ffffff !important;
-        box-shadow: 0 0 16px rgba(225, 29, 72, 0.85);
+        box-shadow: 0 0 16px rgba(153, 27, 27, 0.85);
       }
       50% {
-        background-color: #ffe4e6 !important;
-        border-color: #f43f5e !important;
-        color: #9f1239 !important;
-        box-shadow: 0 0 2px rgba(225, 29, 72, 0.2);
+        background-color: #fee2e2 !important;
+        border-color: #ef4444 !important;
+        color: #991b1b !important;
+        box-shadow: 0 0 2px rgba(153, 27, 27, 0.2);
       }
     }
 
@@ -715,10 +755,12 @@
       min-height: 44px;
       background: #060a08;
       border-bottom: 1.5px solid var(--gold-dark);
-      margin: -16px -16px 8px -16px;
+      margin: 0 -14px 8px -14px;
       padding: 6px 14px;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
+      width: calc(100% + 28px);
+      box-sizing: border-box;
     }
 
     .day-head-left {
@@ -1202,6 +1244,7 @@
         min-height: 36px;
         margin: 0 -8px 6px -8px;
         padding: 4px 8px;
+        width: calc(100% + 16px);
       }
 
       .num {
@@ -1271,6 +1314,7 @@
         min-height: 42px;
         margin: 0 -12px 8px -12px;
         padding: 6px 12px;
+        width: calc(100% + 24px);
       }
       .day-number {
         font-size: 26px;
@@ -1528,19 +1572,20 @@
         ? `<div class="day-head"><div class="day-head-left"><span class="day-number">${d.getDate()}.</span><span class="day-name">${D[wd]}</span>${revertBtn}</div>${actionsHtml}</div>`
         : `<div class="head"><div class="head-left"><span class="num">${d.getDate()}.</span><span class="dow">${D[wd]}</span>${revertBtn}</div>${actionsHtml}</div>`;
 
-      // ZOBRAZENÍ: ŽÁDNÉ ZBYTEČNÉ ODŘÁDKOVÁNÍ! PŘIROZENÉ VYUŽITÍ CELÉ ŠÍŘKY POLE
-      let displayJob = "";
+      // ZOBRAZENÍ: ADRESA (ČERNĚ) A PRÁCE (HNĚDĚ) S DĚLÍCÍ LINKOU A ADAPTIVNÍM ROZVRŽENÍM
+      let jobContentHtml = "";
       if (rain) {
-        displayJob = "Volno / Déšť";
+        jobContentHtml = "Volno / Déšť";
       } else if (a && w) {
-        displayJob = a + (a.endsWith(",") || a.endsWith(" -") ? " " : " · ") + w;
-      } else {
-        displayJob = a || w || "";
+        jobContentHtml = `<div class="job-addr">${esc(a)}</div><div class="job-split"></div><div class="job-desc">${esc(w)}</div>`;
+      } else if (a) {
+        jobContentHtml = `<div class="job-addr">${esc(a)}</div>`;
+      } else if (w) {
+        jobContentHtml = `<div class="job-desc">${esc(w)}</div>`;
       }
 
-      // POLE DNE MÁ NYNÍ 100% PROSTOR PRO TEXT BEZ IKONY MAPY
       let heroHtml = `<div class="hero">
-        <div class="job ${rain ? "rain" : ""}">${esc(displayJob)}</div>
+        <div class="job ${rain ? "rain" : ""}">${jobContentHtml}</div>
         <div class="note ${blink ? "blink" : ""} ${n ? "filled" : ""}">${esc(n)}<button class="mini bell" title="Důležitá poznámka (blikat)">🔔</button></div>
       </div>`;
 
@@ -1895,9 +1940,9 @@
       }
     }, 2500);
 
-    // Cache-busting registrace verze v15
+    // Cache-busting registrace verze v16
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=16', { updateViaCache: 'none' })
+      navigator.serviceWorker.register('./sw.js?v=17', { updateViaCache: 'none' })
         .then(reg => {
           reg.update();
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
